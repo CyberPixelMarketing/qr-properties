@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormSubmit } from "@/lib/use-form-submit";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -42,6 +43,7 @@ export function ProfileForm({
   const ta = useTranslations("auth");
   const locale = useLocale();
   const [state, formAction, pending] = useActionState<ProfileState, FormData>(saveProfileAction, undefined);
+  const onSubmit = useFormSubmit(formAction);
 
   const [accountType, setAccountType] = useState(profile.account_type ?? "office");
   const [slug, setSlug] = useState(profile.slug ?? "");
@@ -103,7 +105,7 @@ export function ProfileForm({
     (slugStatus === "taken" ? t("slugTaken") : slugStatus === "invalid" ? t("slugInvalid") : undefined);
 
   return (
-    <form action={formAction} className="space-y-6" noValidate>
+    <form onSubmit={onSubmit} className="space-y-6" noValidate>
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="onboarding" value={onboarding ? "1" : "0"} />
       <input type="hidden" name="logo_path" value={logoPath} />

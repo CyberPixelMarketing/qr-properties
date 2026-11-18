@@ -23,6 +23,7 @@ Built by DUNE AI.
 | `zod` | Server-side validation of every form/action |
 | `lucide-react` | Icon set (tree-shaken) |
 | `clsx` | Conditional class names |
+| `leaflet` + `react-leaflet` | Pin-picker map when a Google Maps link has no coordinates (OpenStreetMap tiles, no API key) |
 | `@fontsource/ibm-plex-sans-arabic` | Self-hosted Arabic font (no runtime call to Google Fonts) |
 | `server-only` | Build-time guard so server modules (service key) can't reach the browser |
 
@@ -88,7 +89,7 @@ update public.profiles set role = 'admin' where contact_email = 'someone@example
 ## Build phases
 
 - [x] 1 — Foundation, auth, profile, AR/EN
-- [ ] 2 — Listings, buildings, units, images, location
+- [x] 2 — Listings, buildings, units, images, location
 - [ ] 3 — QR, public page, nearest-first, sharing
 - [ ] 4 — Import from link
 - [ ] 5 — Dashboard stats, A4 poster, plans, admin

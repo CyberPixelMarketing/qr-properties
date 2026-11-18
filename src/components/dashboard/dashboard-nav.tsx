@@ -1,12 +1,13 @@
 "use client";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import { LayoutDashboard, UserRound } from "lucide-react";
+import { Building2, LayoutDashboard, UserRound } from "lucide-react";
 import { cn } from "@/components/ui";
 
 // Items are added here as each phase ships (listings, QR, import, billing, admin).
 const items = [
   { href: "/dashboard", key: "dashboard", icon: LayoutDashboard },
+  { href: "/dashboard/listings", key: "listings", icon: Building2 },
   { href: "/dashboard/profile", key: "profile", icon: UserRound },
 ] as const;
 

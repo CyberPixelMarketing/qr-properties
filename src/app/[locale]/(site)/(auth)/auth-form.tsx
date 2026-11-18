@@ -1,5 +1,6 @@
 "use client";
 
+import { useFormSubmit } from "@/lib/use-form-submit";
 import { useActionState, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -35,6 +36,7 @@ export function AuthForm({ mode, next, initialError }: { mode: Mode; next?: stri
   const tc = useTranslations("common");
   const locale = useLocale();
   const [state, formAction, pending] = useActionState(actions[mode], initialError ? { error: initialError } : undefined);
+  const onSubmit = useFormSubmit(formAction);
   const [googlePending, setGooglePending] = useState(false);
 
   const titles: Record<Mode, string> = {
@@ -86,7 +88,7 @@ export function AuthForm({ mode, next, initialError }: { mode: Mode; next?: stri
             </>
           )}
 
-          <form action={formAction} className="space-y-4" noValidate>
+          <form onSubmit={onSubmit} className="space-y-4" noValidate>
             <input type="hidden" name="locale" value={locale} />
             {next && <input type="hidden" name="next" value={next} />}
 
