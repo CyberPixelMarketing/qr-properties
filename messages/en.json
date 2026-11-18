@@ -269,5 +269,30 @@
     "target": "The code opens:",
     "domainWarning": "This code points at the current domain. Don't print it before the final domain is connected.",
     "openPage": "Open my page"
+  },
+  "import": {
+    "title": "Import a listing from a link",
+    "subtitle": "Paste your listing link from any property site and we'll prepare a draft with its details and photos. Review it, complete what's missing (especially the location) and publish.",
+    "ownOnly": "Use this only for your own listings.",
+    "url": "Listing link",
+    "submit": "Import",
+    "working": "Reading the page and copying photos… this can take up to a minute",
+    "remaining": "Remaining today: {n} of {max}",
+    "imported": "Imported as a draft. Review the details, add the location link if missing, then publish.",
+    "manual": "Add it manually",
+    "recent": "Recent imports",
+    "statusPending": "Running",
+    "statusSucceeded": "Done",
+    "statusFailed": "Failed",
+    "openDraft": "Open draft",
+    "errors": {
+      "invalid_url": "Invalid link",
+      "PLAN_LIMIT_IMPORTS": "You've reached today's import limit for your plan. Try again tomorrow.",
+      "PLAN_LIMIT_LISTINGS": "You've reached your plan's listing limit.",
+      "blocked": "We can't open this link.",
+      "fetch_failed": "Couldn't open the page. The site may block automated reading.",
+      "nothing_found": "We couldn't find listing details on that page.",
+      "generic": "Something went wrong while importing."
+    }
   }
 }

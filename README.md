@@ -23,6 +23,9 @@ Built by DUNE AI.
 | `zod` | Server-side validation of every form/action |
 | `lucide-react` | Icon set (tree-shaken) |
 | `clsx` | Conditional class names |
+| `cheerio` | Parses imported pages (JSON-LD → Open Graph → text) |
+| `@anthropic-ai/sdk` | Turns an imported page into structured listing JSON (tool use) |
+| `sharp` | Re-encodes imported photos to WebP + thumbnails on the server |
 | `qrcode` | Generates each advertiser's QR (PNG/SVG) on demand — nothing is stored |
 | `leaflet` + `react-leaflet` | Pin-picker map when a Google Maps link has no coordinates (OpenStreetMap tiles, no API key) |
 | `@fontsource/ibm-plex-sans-arabic` | Self-hosted Arabic font (no runtime call to Google Fonts) |
@@ -97,7 +100,7 @@ update public.profiles set role = 'admin' where contact_email = 'someone@example
 - [x] 1 — Foundation, auth, profile, AR/EN
 - [x] 2 — Listings, buildings, units, images, location
 - [x] 3 — QR, public page, nearest-first, sharing
-- [ ] 4 — Import from link
+- [x] 4 — Import from link
 - [ ] 5 — Dashboard stats, A4 poster, plans, admin
 - [ ] 6 — Polish, seed data, deploy
 
@@ -106,3 +109,14 @@ update public.profiles set role = 'admin' where contact_email = 'someone@example
 The public page asks for location only after showing an explanation. Coordinates stay in the browser
 and are used to sort with the Haversine formula client-side — they are never sent to the server or stored.
 `get_advertiser_listings()` (PostGIS) is also available for server-side distance sorting if needed.
+
+## Import from link
+
+`/dashboard/import` → server action:
+
+1. Validates the URL and records an `import_jobs` row (the DB trigger enforces the plan's daily limit).
+2. Fetches the page with an SSRF guard (http/https only, every redirect re-checked, private/loopback/metadata IPs refused, size + time caps).
+3. Reads JSON-LD, then Open Graph, then page text; if `ANTHROPIC_API_KEY` is set, Claude converts it to structured JSON (tool use). Without a key, the JSON-LD/OG heuristics are used alone.
+4. Copies up to 15 photos into Storage (WebP + thumbnail) and opens the result as a **draft** for review.
+
+Large portals (Bayut, Property Finder) run bot protection and usually refuse server-side reads; agency websites and pages with JSON-LD work best. Failures show a clear message and a link to the manual form.

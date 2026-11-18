@@ -7,10 +7,18 @@ import { SITE_URL } from "@/lib/env";
 import { imagesFor, LISTING_COLUMNS, type ListingRow as Row } from "@/lib/listings";
 import { ListingForm } from "@/components/listings/listing-form";
 import { ListingRow } from "@/components/listings/listing-row";
-import { buttonClass, Card } from "@/components/ui";
+import { Alert, buttonClass, Card } from "@/components/ui";
 
-export default async function EditListingPage({ params }: { params: Promise<{ locale: string; id: string }> }) {
+export default async function EditListingPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+  searchParams: Promise<{ imported?: string }>;
+}) {
   const { locale, id } = await params;
+  const { imported } = await searchParams;
+  const ti = await getTranslations("import");
   setRequestLocale(locale);
   const { supabase, profile } = await requireUser(locale);
   const t = await getTranslations("listings");
@@ -50,6 +58,7 @@ export default async function EditListingPage({ params }: { params: Promise<{ lo
         </Link>
       )}
 
+      {imported && <Alert tone="success">{ti("imported")}</Alert>}
       <Card className="p-5 sm:p-8">
         <h1 className="mb-6 text-2xl font-bold text-navy">{t("editTitle")}</h1>
         <ListingForm
