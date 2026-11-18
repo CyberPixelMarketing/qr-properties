@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy } from "@/components/icons";
 import { Button } from "./ui";
 
 export function CopyButton({ text }: { text: string }) {

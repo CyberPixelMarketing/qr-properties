@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { MessageCircle, Phone } from "lucide-react";
+import { MessageCircle, Phone } from "@/components/icons";
 import { Link } from "@/i18n/navigation";
 import { requireUser, publicStorageUrl } from "@/lib/auth";
 import { qrSvg, qrTargetUrl } from "@/lib/qr";
@@ -46,7 +46,7 @@ export default async function PosterPage({ params }: { params: Promise<{ locale:
             <div className="h-[118mm] w-[118mm] [&>svg]:h-full [&>svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} />
           </div>
           <p className="text-[7mm] font-medium text-brand">{t("sub")}</p>
-          <p className="text-[5mm] text-slate-500" dir="ltr">
+          <p className="text-[5mm] text-muted" dir="ltr">
             {shortUrl}
           </p>
         </div>

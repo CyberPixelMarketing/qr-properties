@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { ArrowRight, Plus } from "lucide-react";
+import { ArrowRight, Plus } from "@/components/icons";
 import { requireUser } from "@/lib/auth";
 import { SITE_URL } from "@/lib/env";
 import { imagesFor, LISTING_COLUMNS, type ListingRow as Row } from "@/lib/listings";
@@ -90,7 +90,7 @@ export default async function EditListingPage({
         <section className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-navy">
-              {t("units")} <span className="text-base font-normal text-slate-500">({units.length})</span>
+              {t("units")} <span className="text-base font-normal text-muted">({units.length})</span>
             </h2>
             <Link href={`/dashboard/listings/new?building=${row.id}`} className={buttonClass("primary")}>
               <Plus className="size-4" aria-hidden />
@@ -98,7 +98,7 @@ export default async function EditListingPage({
             </Link>
           </div>
           {units.length === 0 ? (
-            <Card className="text-center text-slate-600">{t("noUnits")}</Card>
+            <Card className="text-center text-muted">{t("noUnits")}</Card>
           ) : (
             units.map((u) => (
               <ListingRow

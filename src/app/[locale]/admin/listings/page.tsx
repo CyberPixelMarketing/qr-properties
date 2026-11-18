@@ -46,7 +46,7 @@ export default async function AdminListings({
       </form>
       <Card className="overflow-x-auto p-0">
         <table className="w-full min-w-[720px] text-sm">
-          <thead className="bg-slate-50 text-xs text-slate-500">
+          <thead className="bg-page text-xs text-muted">
             <tr>
               <th className="p-3 text-start">{tl("titleLabel")}</th>
               <th className="p-3 text-start">{t("owner")}</th>
@@ -55,10 +55,10 @@ export default async function AdminListings({
               <th className="p-3" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-divider">
             {(rows ?? []).length === 0 && (
               <tr>
-                <td colSpan={5} className="p-6 text-center text-slate-500">
+                <td colSpan={5} className="p-6 text-center text-muted">
                   {t("noResults")}
                 </td>
               </tr>
@@ -67,7 +67,7 @@ export default async function AdminListings({
               <tr key={r.id}>
                 <td className="p-3">
                   <p className="line-clamp-1 font-medium text-navy">{r.title}</p>
-                  <p className="text-xs text-slate-500">{tl(`kind.${r.kind}` as never)}</p>
+                  <p className="text-xs text-muted">{tl(`kind.${r.kind}` as never)}</p>
                 </td>
                 <td className="p-3">
                   {r.owner?.slug ? (
@@ -83,7 +83,7 @@ export default async function AdminListings({
                   <span
                     className={cn(
                       "rounded-full px-2 py-0.5 text-xs",
-                      r.status === "published" ? "bg-green-50 text-green-700" : r.status === "draft" ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-600",
+                      r.status === "published" ? "bg-green-50 text-green-700" : r.status === "draft" ? "bg-amber-50 text-amber-700" : "bg-divider text-muted",
                     )}
                   >
                     {tl(`status.${r.status}`)}

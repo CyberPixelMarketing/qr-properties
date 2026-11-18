@@ -80,10 +80,10 @@ export function AuthForm({ mode, next, initialError }: { mode: Mode; next?: stri
                 <GoogleIcon />
                 {t("google")}
               </Button>
-              <div className="my-5 flex items-center gap-3 text-xs text-slate-500">
-                <span className="h-px flex-1 bg-slate-200" />
+              <div className="my-5 flex items-center gap-3 text-xs text-muted">
+                <span className="h-px flex-1 bg-line" />
                 {t("or")}
-                <span className="h-px flex-1 bg-slate-200" />
+                <span className="h-px flex-1 bg-line" />
               </div>
             </>
           )}
@@ -133,7 +133,7 @@ export function AuthForm({ mode, next, initialError }: { mode: Mode; next?: stri
       )}
 
       {mode === "login" && (
-        <p className="mt-6 text-center text-sm text-slate-600">
+        <p className="mt-6 text-center text-sm text-muted">
           {t("noAccount")}{" "}
           <Link href="/signup" className="font-medium text-brand hover:underline">
             {t("signupBtn")}
@@ -141,7 +141,7 @@ export function AuthForm({ mode, next, initialError }: { mode: Mode; next?: stri
         </p>
       )}
       {mode === "signup" && (
-        <p className="mt-6 text-center text-sm text-slate-600">
+        <p className="mt-6 text-center text-sm text-muted">
           {t("haveAccount")}{" "}
           <Link href="/login" className="font-medium text-brand hover:underline">
             {t("loginBtn")}

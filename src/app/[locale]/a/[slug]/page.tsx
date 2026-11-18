@@ -5,7 +5,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getPublicListings, getPublicProfile } from "@/lib/public-data";
 import { listingImageUrl, publicAvatarUrl, thumbUrl } from "@/lib/listing-urls";
 import { SITE_URL, SUPABASE_URL } from "@/lib/env";
-import { AdvertiserHeader } from "@/components/public/advertiser-header";
+import { ProfileCard } from "@/components/public/profile-card";
+import { QrCard } from "@/components/public/qr-card";
+import { ShareButton } from "@/components/public/share-button";
+import { TopBar } from "@/components/public/top-bar";
 import { PublicListings } from "@/components/public/public-listings";
 import { Tracker } from "@/components/public/tracker";
 import type { Advertiser } from "@/components/public/types";
@@ -39,6 +42,7 @@ export default async function AdvertiserPage({ params }: Params) {
   const { profile, links } = data;
   const items = await getPublicListings(slug);
   const t = await getTranslations("common");
+  const tp = await getTranslations("public");
 
   // Warm up the image host and the likely LCP image (newest top-level listing's cover).
   preconnect(SUPABASE_URL, { crossOrigin: "anonymous" });
@@ -57,14 +61,28 @@ export default async function AdvertiserPage({ params }: Params) {
   };
   const pageUrl = `${SITE_URL}/${locale}/a/${slug}`;
 
+  const sellable = items.filter((i) => i.kind !== "building");
+  const stats = {
+    rent: sellable.filter((i) => i.purpose === "rent").length,
+    sale: sellable.filter((i) => i.purpose === "sale").length,
+    active: sellable.length,
+  };
+
   return (
-    <div className="min-h-dvh bg-slate-50">
+    <div className="min-h-dvh bg-page">
       <Tracker slug={slug} />
-      <AdvertiserHeader profile={profile} links={links} advertiser={advertiser} pageUrl={pageUrl} />
-      <main className="mx-auto max-w-6xl px-4 py-6">
+      <TopBar
+        title={tp("advertiser")}
+        actions={<ShareButton iconOnly url={pageUrl} title={tp("allProperties", { name: profile.display_name })} />}
+      />
+      <main className="mx-auto max-w-6xl space-y-3 px-4 py-3">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+          <ProfileCard profile={profile} links={links} advertiser={advertiser} stats={stats} />
+          <QrCard slug={slug} title={tp("qrCardTitle")} body={tp("qrCardBody")} advertiserName={profile.display_name} />
+        </div>
         <PublicListings items={items} advertiser={advertiser} qrUrl={`/api/qr/${slug}?size=600`} siteUrl={`${SITE_URL}/${locale}`} />
       </main>
-      <footer className="py-8 text-center text-xs text-slate-500">{t("appName")}</footer>
+      <footer className="py-8 text-center text-xs text-muted">{t("appName")}</footer>
     </div>
   );
 }

@@ -33,7 +33,7 @@ export function PlanForm({ plan }: { plan: PlanRow }) {
         <input type="hidden" name="id" value={plan.id} />
         <input type="hidden" name="locale" value={locale} />
         <div className="flex items-center justify-between">
-          <p className="font-mono text-sm text-slate-500">
+          <p className="font-mono text-sm text-muted">
             {t("code")}: {plan.code} {plan.is_default && <span className="ms-2 rounded bg-sky-soft px-1.5 py-0.5 text-xs text-brand">{t("isDefault")}</span>}
           </p>
           {state?.ok && <span className="text-sm text-green-700">{t("saved")}</span>}

@@ -10,7 +10,7 @@ import {
   LayoutDashboard,
   Shield,
   Users,
-} from "lucide-react";
+} from "@/components/icons";
 import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -32,10 +32,10 @@ export default async function AdminLayout({
 
   if (profile.role !== "admin" || profile.is_suspended) {
     return (
-      <main className="grid min-h-dvh place-items-center bg-slate-50 p-4">
+      <main className="grid min-h-dvh place-items-center bg-page p-4">
         <Card className="max-w-sm text-center">
-          <Shield className="mx-auto mb-3 size-8 text-slate-400" aria-hidden />
-          <p className="text-slate-700">{t("notAdmin")}</p>
+          <Shield className="mx-auto mb-3 size-8 text-subtle" aria-hidden />
+          <p className="text-text">{t("notAdmin")}</p>
           <Link
             href="/dashboard"
             className="mt-4 inline-block text-sm font-medium text-brand hover:underline"
@@ -54,7 +54,7 @@ export default async function AdminLayout({
   ];
   return (
     <NextIntlClientProvider messages={messages}>
-      <div className="min-h-dvh bg-slate-50">
+      <div className="min-h-dvh bg-page">
         <header className="bg-navy text-white">
           <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
             <span className="flex items-center gap-2 font-bold">
@@ -77,7 +77,7 @@ export default async function AdminLayout({
             <Link
               key={href}
               href={href}
-              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-medium text-navy ring-1 ring-slate-200 hover:bg-sky-soft"
+              className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-white px-3 py-2 text-sm font-medium text-navy ring-1 ring-line hover:bg-sky-soft"
             >
               <Icon className="size-4" aria-hidden />
               {label}

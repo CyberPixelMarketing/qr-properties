@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { LocateFixed, MapPin, SlidersHorizontal, X } from "lucide-react";
+import { LocateFixed, MapPin, SlidersHorizontal, X } from "@/components/icons";
 import { distanceMeters, type LatLng } from "@/lib/maps";
-import { Button, cn } from "@/components/ui";
+import { Button, Segmented, cn } from "@/components/ui";
 import { BuildingCard, ListingCard } from "./listing-cards";
 import type { Advertiser, PublicItem } from "./types";
 
@@ -128,28 +128,29 @@ export function PublicListings({
     return top;
   }, [items, filters, origin]);
 
-  const filtersActive = JSON.stringify(filters) !== JSON.stringify(EMPTY);
+  // "Filters" badge counts only the extra filters (purpose has its own segmented control).
+  const extraActive = filters.type !== "all" || filters.beds !== "any" || filters.min !== "" || filters.max !== "";
   const set = <K extends keyof Filters>(k: K, v: Filters[K]) => setFilters((f) => ({ ...f, [k]: v }));
   const total = groups.reduce((n, g) => n + (g.item.kind === "building" ? Math.max(1, g.units.length) : 1), 0);
 
   const selectCls =
-    "w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-800 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20";
+    "w-full min-h-11 rounded-xl border border-line bg-white px-3 text-[13px] text-ink focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/15";
 
   return (
-    <section className="space-y-4" aria-label={t("results", { count: total })}>
+    <section className="space-y-3" aria-label={t("results", { count: total })}>
       {/* Location explainer shown before the browser prompt */}
       {(loc === "prompt" || loc === "locating") && (
-        <div className="flex flex-col gap-3 rounded-card border border-blue-200 bg-sky-soft p-4 sm:flex-row sm:items-center">
-          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand text-white">
-            <MapPin className="size-6" aria-hidden />
+        <div className="flex flex-col gap-3 rounded-card bg-white p-4 shadow-card sm:flex-row sm:items-center">
+          <span className="grid size-11 shrink-0 place-items-center rounded-full bg-sky-soft text-brand">
+            <MapPin className="size-[22px]" aria-hidden />
           </span>
           <div className="flex-1">
-            <p className="font-bold text-navy">{t("locTitle")}</p>
-            <p className="text-sm text-slate-600">{t("locBody")}</p>
+            <p className="text-[15px] font-semibold text-ink">{t("locTitle")}</p>
+            <p className="text-[13px] leading-[22px] text-muted">{t("locBody")}</p>
           </div>
           <div className="flex gap-2">
-            <Button onClick={locate} disabled={loc === "locating"}>
-              <LocateFixed className="size-4" aria-hidden />
+            <Button onClick={locate} disabled={loc === "locating"} className="flex-1 sm:flex-none">
+              <LocateFixed className="size-[18px]" aria-hidden />
               {loc === "locating" ? t("locating") : t("locAllow")}
             </Button>
             {loc === "prompt" && (
@@ -161,52 +162,47 @@ export function PublicListings({
         </div>
       )}
 
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm text-slate-600" aria-live="polite">
-          {t("results", { count: total })} · {origin ? t("sortedNearest") : t("sortedNewest")}
-        </p>
-        <div className="flex gap-2">
-          {!origin && (loc === "dismissed" || loc === "denied") && (
-            <Button variant="secondary" onClick={locate} className="px-3 py-2">
-              <LocateFixed className="size-4" aria-hidden />
-              {t("sortNearest")}
-            </Button>
+      {/* Segmented purpose (Figma S80) + filters */}
+      <div className="flex items-center gap-2">
+        <Segmented
+          className="flex-1"
+          name="purpose"
+          value={filters.purpose}
+          onChange={(v) => set("purpose", v)}
+          options={[
+            { value: "all", label: t("segAll") },
+            { value: "sale", label: t("segSale") },
+            { value: "rent", label: t("segRent") },
+          ]}
+        />
+        <button
+          type="button"
+          onClick={() => setShowFilters((v) => !v)}
+          aria-expanded={showFilters}
+          aria-controls="filters"
+          aria-label={t("filters")}
+          className={cn(
+            "relative grid size-[46px] shrink-0 place-items-center rounded-xl border bg-white",
+            extraActive ? "border-brand text-brand" : "border-line text-ink",
           )}
-          <Button
-            variant={filtersActive ? "primary" : "secondary"}
-            onClick={() => setShowFilters((v) => !v)}
-            aria-expanded={showFilters}
-            aria-controls="filters"
-            className="px-3 py-2"
-          >
-            <SlidersHorizontal className="size-4" aria-hidden />
-            {t("filters")}
-          </Button>
-        </div>
+        >
+          <SlidersHorizontal className="size-5" aria-hidden />
+          {extraActive && <span className="absolute end-2 top-2 size-2 rounded-full bg-brand" />}
+        </button>
       </div>
-      {loc === "denied" && !origin && <p className="text-xs text-slate-500">{t("locDenied")}</p>}
 
       {showFilters && (
-        <div id="filters" className="grid grid-cols-2 gap-3 rounded-card border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-5">
-          <label className="space-y-1 text-sm">
-            <span className="font-medium text-navy">{t("type")}</span>
+        <div id="filters" className="grid grid-cols-2 gap-3 rounded-card bg-white p-4 shadow-card md:grid-cols-4">
+          <label className="space-y-1">
+            <span className="text-[13px] font-semibold text-ink">{t("type")}</span>
             <select className={selectCls} value={filters.type} onChange={(e) => set("type", e.target.value as Filters["type"])}>
               <option value="all">{t("anyType")}</option>
               <option value="apartment">{t("apartments")}</option>
               <option value="building">{t("buildings")}</option>
             </select>
           </label>
-          <label className="space-y-1 text-sm">
-            <span className="font-medium text-navy">{tl("purposeLabel")}</span>
-            <select className={selectCls} value={filters.purpose} onChange={(e) => set("purpose", e.target.value as Filters["purpose"])}>
-              <option value="all">{t("anyPurpose")}</option>
-              <option value="sale">{tl("purpose.sale")}</option>
-              <option value="rent">{tl("purpose.rent")}</option>
-            </select>
-          </label>
-          <label className="space-y-1 text-sm">
-            <span className="font-medium text-navy">{t("beds")}</span>
+          <label className="space-y-1">
+            <span className="text-[13px] font-semibold text-ink">{t("beds")}</span>
             <select className={selectCls} value={filters.beds} onChange={(e) => set("beds", e.target.value as Filters["beds"])}>
               <option value="any">{t("anyBeds")}</option>
               <option value="0">{tl("studio")}</option>
@@ -216,16 +212,20 @@ export function PublicListings({
               <option value="4">4+</option>
             </select>
           </label>
-          <label className="space-y-1 text-sm">
-            <span className="font-medium text-navy">{t("minPrice")}</span>
+          <label className="space-y-1">
+            <span className="text-[13px] font-semibold text-ink">{t("minPrice")}</span>
             <input className={cn(selectCls, "ltr-field")} inputMode="numeric" value={filters.min} onChange={(e) => set("min", e.target.value)} />
           </label>
-          <label className="space-y-1 text-sm">
-            <span className="font-medium text-navy">{t("maxPrice")}</span>
+          <label className="space-y-1">
+            <span className="text-[13px] font-semibold text-ink">{t("maxPrice")}</span>
             <input className={cn(selectCls, "ltr-field")} inputMode="numeric" value={filters.max} onChange={(e) => set("max", e.target.value)} />
           </label>
-          {filtersActive && (
-            <button type="button" onClick={() => setFilters(EMPTY)} className="col-span-2 inline-flex items-center gap-1 text-sm text-brand hover:underline md:col-span-5">
+          {extraActive && (
+            <button
+              type="button"
+              onClick={() => setFilters((f) => ({ ...EMPTY, purpose: f.purpose }))}
+              className="col-span-2 inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:underline md:col-span-4"
+            >
               <X className="size-4" aria-hidden />
               {t("reset")}
             </button>
@@ -233,12 +233,25 @@ export function PublicListings({
         </div>
       )}
 
+      <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+        <p className="text-[13px] text-muted" aria-live="polite">
+          {t("results", { count: total })} · {origin ? t("sortedNearest") : t("sortedNewest")}
+        </p>
+        {!origin && (loc === "dismissed" || loc === "denied") && (
+          <button type="button" onClick={locate} className="inline-flex items-center gap-1 text-[13px] font-semibold text-brand hover:underline">
+            <LocateFixed className="size-4" aria-hidden />
+            {t("sortNearest")}
+          </button>
+        )}
+      </div>
+      {loc === "denied" && !origin && <p className="px-1 text-xs text-muted">{t("locDenied")}</p>}
+
       {items.length === 0 ? (
-        <p className="rounded-card border border-slate-200 bg-white p-8 text-center text-slate-600">{t("noListings")}</p>
+        <p className="rounded-card bg-white p-8 text-center text-muted shadow-card">{t("noListings")}</p>
       ) : groups.length === 0 ? (
-        <p className="rounded-card border border-slate-200 bg-white p-8 text-center text-slate-600">{t("noResults")}</p>
+        <p className="rounded-card bg-white p-8 text-center text-muted shadow-card">{t("noResults")}</p>
       ) : (
-        <div className="space-y-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {groups.map((g, i) =>
             g.item.kind === "building" ? (
               <BuildingCard

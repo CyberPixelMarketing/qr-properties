@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { buttonClass } from "@/components/ui";
-import { MapPin, QrCode, Link2 } from "lucide-react";
+import { Link2, MapPin, QrCode } from "@/components/icons";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -15,22 +15,25 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-14 sm:py-24">
-      <section className="mx-auto max-w-2xl text-center">
-        <h1 className="text-3xl font-bold leading-tight text-navy sm:text-5xl">{t("title")}</h1>
-        <p className="mt-5 text-lg text-slate-600">{t("subtitle")}</p>
-        <Link href="/signup" className={buttonClass("primary", "mt-8 px-8 py-3 text-base")}>
-          {t("cta")}
-        </Link>
+    <div>
+      {/* Hero: white panel with rounded bottom (Figma S10 "Hero") */}
+      <section className="rounded-b-[23px] bg-white">
+        <div className="mx-auto max-w-3xl px-4 pb-10 pt-8 text-center sm:pb-16 sm:pt-14">
+          <h1 className="text-[27px] font-bold leading-[38px] text-ink sm:text-5xl sm:leading-[1.25]">{t("title")}</h1>
+          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-[26px] text-muted sm:text-lg">{t("subtitle")}</p>
+          <Link href="/signup" className={buttonClass("primary", "mt-8 min-h-12 px-8 text-[15px]")}>
+            {t("cta")}
+          </Link>
+        </div>
       </section>
-      <section className="mt-16 grid gap-4 sm:grid-cols-3">
+      <section className="mx-auto grid max-w-5xl gap-3 px-4 py-8 sm:grid-cols-3 sm:py-12">
         {features.map(({ icon: Icon, title, body }) => (
-          <div key={title} className="rounded-card border border-slate-200 bg-white p-6 shadow-sm">
-            <span className="mb-4 grid size-11 place-items-center rounded-xl bg-sky-soft text-brand">
-              <Icon className="size-6" aria-hidden />
+          <div key={title} className="flex flex-col items-center gap-2 rounded-card bg-white px-4 py-6 text-center">
+            <span className="grid size-[46px] place-items-center rounded-full bg-sky-soft text-brand">
+              <Icon className="size-[22px]" aria-hidden />
             </span>
-            <h2 className="font-bold text-navy">{title}</h2>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">{body}</p>
+            <h2 className="text-base font-semibold text-ink">{title}</h2>
+            <p className="text-[13px] leading-[22px] text-muted">{body}</p>
           </div>
         ))}
       </section>

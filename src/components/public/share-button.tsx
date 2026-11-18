@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Check, Copy, Share2, X } from "lucide-react";
+import { Check, Copy, Share2, X } from "@/components/icons";
 import { waShareHref } from "@/lib/contact";
 import { Button, buttonClass, cn } from "@/components/ui";
 import { WhatsAppIcon } from "./contact-buttons";
@@ -13,12 +13,14 @@ export function ShareButton({
   title,
   text,
   variant = "secondary",
+  iconOnly = false,
   className,
 }: {
   url: string;
   title: string;
   text?: string;
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "outline" | "ghost";
+  iconOnly?: boolean;
   className?: string;
 }) {
   const t = useTranslations("public");
@@ -64,27 +66,39 @@ export function ShareButton({
 
   return (
     <>
-      <Button type="button" variant={variant} onClick={onShare} className={className}>
-        <Share2 className="size-4" aria-hidden />
-        {t("share")}
-      </Button>
+      {iconOnly ? (
+        <button
+          type="button"
+          onClick={onShare}
+          aria-label={t("share")}
+          title={t("share")}
+          className={cn("grid size-10 shrink-0 place-items-center rounded-full bg-white text-ink shadow-card hover:bg-page", className)}
+        >
+          <Share2 className="size-5" aria-hidden />
+        </button>
+      ) : (
+        <Button type="button" variant={variant} onClick={onShare} className={className}>
+          <Share2 className="size-[18px]" aria-hidden />
+          {t("share")}
+        </Button>
+      )}
       {open && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4 sm:items-center" onClick={() => setOpen(false)}>
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 sm:items-center sm:p-4" onClick={() => setOpen(false)}>
           <div
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
             aria-label={t("shareTitle")}
-            className="w-full max-w-sm space-y-3 rounded-2xl bg-white p-5 shadow-xl"
+            className="w-full max-w-sm space-y-3 rounded-t-3xl bg-white p-5 shadow-xl sm:rounded-3xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <h2 className="font-bold text-navy">{t("shareTitle")}</h2>
-              <button type="button" onClick={() => setOpen(false)} className="rounded-lg p-1.5 hover:bg-slate-100" aria-label={t("close")}>
+              <h2 className="text-[17px] font-semibold text-ink">{t("shareTitle")}</h2>
+              <button type="button" onClick={() => setOpen(false)} className="rounded-lg p-1.5 hover:bg-divider" aria-label={t("close")}>
                 <X className="size-5" aria-hidden />
               </button>
             </div>
-            <p className="truncate rounded-lg bg-slate-50 px-3 py-2 text-sm text-slate-600" dir="ltr">
+            <p className="truncate rounded-xl bg-page px-3 py-2.5 text-[13px] text-muted" dir="ltr">
               {shareUrl}
             </p>
             <div className="grid grid-cols-2 gap-2">

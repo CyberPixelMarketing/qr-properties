@@ -1,4 +1,4 @@
-# QR Properties
+# Alfareej (الفريج) — QR Properties
 
 A bilingual (Arabic / English) real-estate listing platform for the UAE market.
 Each advertiser gets **one QR code** that opens their public page, where listings are sorted **nearest-first** from the visitor's location.
@@ -21,14 +21,14 @@ Built by DUNE AI.
 | `@supabase/ssr` | Cookie-based Supabase sessions for the App Router and middleware |
 | `next-intl` | Translations, locale routing, RTL/LTR |
 | `zod` | Server-side validation of every form/action |
-| `lucide-react` | Icon set (tree-shaken) |
+| `react-icons` (io5) | Ionicons — the icon set used in the Alfareej Figma design system |
 | `clsx` | Conditional class names |
 | `cheerio` | Parses imported pages (JSON-LD → Open Graph → text) |
 | `@anthropic-ai/sdk` | Turns an imported page into structured listing JSON (tool use) |
 | `sharp` | Re-encodes imported photos to WebP + thumbnails on the server |
 | `qrcode` | Generates each advertiser's QR (PNG/SVG) on demand — nothing is stored |
 | `leaflet` + `react-leaflet` | Pin-picker map when a Google Maps link has no coordinates (OpenStreetMap tiles, no API key) |
-| `@fontsource/ibm-plex-sans-arabic` | Self-hosted Arabic font (no runtime call to Google Fonts) |
+| `@fontsource/noto-sans-arabic` | Noto Sans Arabic (design font), self-hosted |
 | `server-only` | Build-time guard so server modules (service key) can't reach the browser |
 
 ## Local development
@@ -147,3 +147,7 @@ Large portals (Bayut, Property Finder) run bot protection and usually refuse ser
 ## Performance
 
 Lighthouse (mobile, local production build): public advertiser page — Performance 87–90, Accessibility 100; landing and login — Performance 96–97, Accessibility 100. Public pages ship no Supabase client JS, use ISR (60 s), pre-connect to Storage, preload the first photo and serve 720 px thumbnails in cards.
+
+## Design
+
+UI follows the Figma file **Alfareej — App Design v1** (Design System, S10 Home, S15 Property details, S80 Advertiser page, S80b My public page & QR). Tokens live in `src/app/globals.css` (`@theme`): primary `#2A7CBF`, ink `#0E1C2B`, bg `#F5F7FA`, primarySoft `#EAF3FB`, border `#E3E8EE`, muted `#6B7785`, success `#1E9E6A`, WhatsApp `#1FAF54`; cards 16 px radius + soft shadow; buttons 14 px radius. Logo: `public/brand/alfareej-logo.png`.

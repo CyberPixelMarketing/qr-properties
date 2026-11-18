@@ -45,7 +45,7 @@ export default function PinMap({
   };
 
   return (
-    <div style={{ height }} className="overflow-hidden rounded-xl border border-slate-200" dir="ltr">
+    <div style={{ height }} className="overflow-hidden rounded-xl border border-line" dir="ltr">
       <MapContainer
         key={interactive ? "i" : `${center.lat},${center.lng}`}
         center={[center.lat, center.lng]}

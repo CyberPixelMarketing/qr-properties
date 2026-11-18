@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "عقارات QR",
+    "appName": "الفريج",
     "save": "حفظ",
     "saving": "جارٍ الحفظ…",
     "saved": "تم الحفظ",
@@ -105,7 +105,9 @@
     "publicPage": "صفحتك العامة",
     "copy": "نسخ",
     "copied": "تم النسخ",
-    "comingNext": "إدارة الإعلانات والـ QR تجي في المراحل القادمة."
+    "comingNext": "إدارة الإعلانات والـ QR تجي في المراحل القادمة.",
+    "myQrTitle": "رمز QR الخاص بي",
+    "myQrBody": "اطبعه على اللوحات والمنشورات. يمسحه العملاء لرؤية جميع إعلاناتك."
   },
   "pricing": {
     "title": "الخطط والأسعار",
@@ -260,7 +262,32 @@
     "waMessage": "مرحباً، أستفسر عن هذا العقار: {title}\n{url}",
     "allProperties": "كل عقارات {name}",
     "inBuilding": "ضمن {name}",
-    "poweredBy": "صفحة عقارات عبر {app}"
+    "poweredBy": "صفحة عقارات عبر {app}",
+    "memberSince": "عضو منذ {date}",
+    "officeType": "مكتب وساطة",
+    "individualType": "وسيط / مالك عقار",
+    "statRent": "للإيجار",
+    "statSale": "للبيع",
+    "statActive": "إعلانات نشطة",
+    "qrCardTitle": "رمز QR للمعلن",
+    "qrCardBody": "امسح الرمز لعرض جميع إعلانات هذا المعلن.",
+    "qrShow": "عرض رمز QR",
+    "qrSheetTitle": "رمز QR",
+    "qrDownload": "تحميل الرمز",
+    "segAll": "الكل",
+    "segSale": "للبيع",
+    "segRent": "إيجار",
+    "advertiser": "المعلن",
+    "propertySpecs": "مواصفات العقار",
+    "purposeLabel": "الغرض",
+    "typeLabel": "النوع",
+    "bathsLabel": "الحمامات",
+    "bedsLabel": "غرف النوم",
+    "areaLabel": "المساحة المبنية",
+    "bedsN": "{n, plural, one {غرفة واحدة} two {غرفتين} few {# غرف} many {# غرفة} other {# غرفة}}",
+    "bathsN": "{n, plural, one {حمام واحد} two {حمامين} few {# حمامات} many {# حمام} other {# حمام}}",
+    "sqft": "{n} قدم²",
+    "back": "رجوع"
   },
   "qr": {
     "title": "كود QR الخاص فيك",

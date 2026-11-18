@@ -4,7 +4,7 @@ import { useFormSubmit } from "@/lib/use-form-submit";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { ImagePlus, Plus, Trash2, CheckCircle2, AlertTriangle } from "lucide-react";
+import { ImagePlus, Plus, Trash2, CheckCircle2, AlertTriangle } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
 import { Alert, Button, Field, Input, Textarea, cn } from "@/components/ui";
 import { saveProfileAction, type ProfileState } from "@/app/[locale]/dashboard/actions";
@@ -129,7 +129,7 @@ export function ProfileForm({
               key={v}
               className={cn(
                 "flex cursor-pointer items-center justify-center rounded-xl border px-4 py-3 text-sm font-medium transition",
-                accountType === v ? "border-brand bg-sky-soft text-brand" : "border-slate-300 text-slate-700",
+                accountType === v ? "border-brand bg-sky-soft text-brand" : "border-line bg-white text-text",
               )}
             >
               <input
@@ -149,7 +149,7 @@ export function ProfileForm({
       {/* Logo */}
       <Field label={t("logo")} error={uploadError ? t("uploadFailed") : undefined}>
         <div className="flex items-center gap-4">
-          <div className="relative grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-slate-200 bg-sky-soft">
+          <div className="relative grid size-20 shrink-0 place-items-center overflow-hidden rounded-2xl border border-line bg-sky-soft">
             {logoPreview ? (
               <Image src={logoPreview} alt="" fill sizes="80px" className="object-cover" unoptimized />
             ) : (
@@ -201,8 +201,8 @@ export function ProfileForm({
           )
         }
       >
-        <div className="flex items-stretch overflow-hidden rounded-xl border border-slate-300 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20" dir="ltr">
-          <span className="flex items-center bg-slate-50 px-3 text-sm text-slate-500">{siteUrl.replace(/^https?:\/\//, "")}/a/</span>
+        <div className="flex items-stretch overflow-hidden rounded-xl border border-line focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20" dir="ltr">
+          <span className="flex items-center bg-page px-3 text-sm text-muted">{siteUrl.replace(/^https?:\/\//, "")}/a/</span>
           <input
             id="slug"
             name="slug"
@@ -248,9 +248,9 @@ export function ProfileForm({
       {/* Credential links */}
       <fieldset className="space-y-3">
         <legend className="text-sm font-medium text-navy">{t("credentials")}</legend>
-        <p className="text-xs text-slate-500">{t("credentialsHint")}</p>
+        <p className="text-xs text-muted">{t("credentialsHint")}</p>
         {creds.map((c, i) => (
-          <div key={c.key} className="grid gap-2 rounded-xl border border-slate-200 p-3 sm:grid-cols-[1fr_2fr_auto]">
+          <div key={c.key} className="grid gap-2 rounded-xl border border-line p-3 sm:grid-cols-[1fr_2fr_auto]">
             <Input
               aria-label={t("credentialLabel")}
               placeholder={t("credentialLabel")}

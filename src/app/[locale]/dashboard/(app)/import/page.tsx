@@ -32,22 +32,22 @@ export default async function ImportPage({ params }: { params: Promise<{ locale:
     <div className="space-y-6">
       <Card className="p-6 sm:p-8">
         <h1 className="text-2xl font-bold text-navy">{t("title")}</h1>
-        <p className="mb-6 mt-2 text-slate-600">{t("subtitle")}</p>
+        <p className="mb-6 mt-2 text-muted">{t("subtitle")}</p>
         <ImportForm disabled={remaining === 0} />
-        {remaining != null && <p className="mt-4 text-sm text-slate-500">{t("remaining", { n: remaining, max: max! })}</p>}
+        {remaining != null && <p className="mt-4 text-sm text-muted">{t("remaining", { n: remaining, max: max! })}</p>}
       </Card>
 
       {jobs && jobs.length > 0 && (
         <Card>
           <h2 className="mb-3 font-bold text-navy">{t("recent")}</h2>
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-divider">
             {jobs.map((j) => (
               <li key={j.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm">
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-slate-700" dir="ltr">
+                  <p className="truncate text-text" dir="ltr">
                     {j.url}
                   </p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-muted">
                     {format.relativeTime(new Date(j.created_at))}
                     {j.error ? ` · ${t(`errors.${j.error}` as never)}` : ""}
                   </p>

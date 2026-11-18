@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { buttonClass, cn } from "@/components/ui";
-import { Check } from "lucide-react";
+import { Check } from "@/components/icons";
 
 export default async function PricingPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -22,7 +22,7 @@ export default async function PricingPage({ params }: { params: Promise<{ locale
     <div className="mx-auto max-w-5xl px-4 py-14">
       <header className="text-center">
         <h1 className="text-3xl font-bold text-navy">{t("title")}</h1>
-        <p className="mt-3 text-slate-600">{t("subtitle")}</p>
+        <p className="mt-3 text-muted">{t("subtitle")}</p>
       </header>
       <div className="mt-10 grid gap-4 md:grid-cols-3">
         {(plans ?? []).map((p) => (
@@ -30,7 +30,7 @@ export default async function PricingPage({ params }: { params: Promise<{ locale
             key={p.code}
             className={cn(
               "flex flex-col rounded-card border bg-white p-6 shadow-sm",
-              p.is_default ? "border-brand ring-2 ring-brand/20" : "border-slate-200",
+              p.is_default ? "border-brand ring-2 ring-brand/20" : "border-line",
             )}
           >
             <h2 className="text-lg font-bold text-navy">{locale === "ar" ? p.name_ar : p.name_en}</h2>
@@ -47,7 +47,7 @@ export default async function PricingPage({ params }: { params: Promise<{ locale
                 </p>
               )}
             </div>
-            <ul className="mt-4 flex-1 space-y-2 text-sm text-slate-700">
+            <ul className="mt-4 flex-1 space-y-2 text-sm text-text">
               <li className="flex items-center gap-2">
                 <Check className="size-4 text-brand" aria-hidden />
                 {p.max_listings == null ? t("unlimitedListings") : t("listings", { count: p.max_listings })}

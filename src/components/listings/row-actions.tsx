@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Check, Link2, Trash2 } from "lucide-react";
+import { Check, Link2, Trash2 } from "@/components/icons";
 import { deleteListingAction } from "@/app/[locale]/dashboard/(app)/listings/actions";
 import { Button } from "@/components/ui";
 

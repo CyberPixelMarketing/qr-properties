@@ -3,7 +3,7 @@
 import { useFormSubmit } from "@/lib/use-form-submit";
 import { useActionState, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Alert, Button, Field, Input, Textarea, cn } from "@/components/ui";
+import { Alert, Button, Field, Input, Segmented, Textarea } from "@/components/ui";
 import { saveListingAction, type ListingState } from "@/app/[locale]/dashboard/(app)/listings/actions";
 import { ImageManager, type ManagedImage } from "./image-manager";
 import { LocationField } from "./location-field";
@@ -25,42 +25,6 @@ export type ListingFormValues = {
   lng: number | null;
   address_text: string | null;
 };
-
-function Segmented<T extends string>({
-  name,
-  value,
-  options,
-  onChange,
-}: {
-  name: string;
-  value: T | null;
-  options: { value: T; label: string }[];
-  onChange: (v: T) => void;
-}) {
-  return (
-    <div className="grid auto-cols-fr grid-flow-col gap-2">
-      {options.map((o) => (
-        <label
-          key={o.value}
-          className={cn(
-            "flex cursor-pointer items-center justify-center rounded-xl border px-3 py-2.5 text-sm font-medium transition",
-            value === o.value ? "border-brand bg-sky-soft text-brand" : "border-slate-300 text-slate-700 hover:border-slate-400",
-          )}
-        >
-          <input
-            type="radio"
-            name={name}
-            value={o.value}
-            checked={value === o.value}
-            onChange={() => onChange(o.value)}
-            className="sr-only"
-          />
-          {o.label}
-        </label>
-      ))}
-    </div>
-  );
-}
 
 export function ListingForm({
   mode,
@@ -205,7 +169,7 @@ export function ListingForm({
       </section>
 
       {/* Status + submit */}
-      <section className="sticky bottom-0 -mx-5 space-y-3 border-t border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:-mx-8 sm:px-8">
+      <section className="sticky bottom-[76px] -mx-5 space-y-3 border-t border-line bg-white/95 px-5 py-4 backdrop-blur sm:-mx-8 sm:px-8 md:bottom-0">
         <Field label={t("statusLabel")}>
           <Segmented
             name="_status"

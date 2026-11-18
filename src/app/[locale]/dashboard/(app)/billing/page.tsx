@@ -1,5 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Check } from "lucide-react";
+import { Check } from "@/components/icons";
 import { requireUser } from "@/lib/auth";
 import { Card, cn } from "@/components/ui";
 
@@ -17,7 +17,7 @@ function Meter({ label, used, max, unlimited }: { label: string; used: number; m
   return (
     <div>
       <div className="flex justify-between text-sm">
-        <span className="text-slate-600">{label}</span>
+        <span className="text-muted">{label}</span>
         <span className="font-medium text-navy">
           {used} / {max == null ? unlimited : max}
         </span>
@@ -57,7 +57,7 @@ export default async function BillingPage({ params }: { params: Promise<{ locale
         <Card className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <p className="text-sm text-slate-500">{t("current")}</p>
+              <p className="text-sm text-muted">{t("current")}</p>
               <p className="text-xl font-bold text-navy">{locale === "ar" ? usage.plan_name_ar : usage.plan_name_en}</p>
             </div>
             <span className="rounded-full bg-green-50 px-3 py-1 text-sm font-medium text-green-700">{t("active")}</span>
@@ -89,14 +89,14 @@ export default async function BillingPage({ params }: { params: Promise<{ locale
                       {nf.format(Number(p.price_monthly_aed))} {t("aed")} <span className="text-sm font-normal">{t("perMonth")}</span>
                     </p>
                     {p.price_yearly_aed != null && (
-                      <p className="text-slate-600">
+                      <p className="text-muted">
                         {nf.format(Number(p.price_yearly_aed))} {t("aed")} {t("perYear")}
                       </p>
                     )}
                   </>
                 )}
               </div>
-              <ul className="mt-4 space-y-2 text-sm text-slate-700">
+              <ul className="mt-4 space-y-2 text-sm text-text">
                 <li className="flex items-center gap-2">
                   <Check className="size-4 text-brand" aria-hidden />
                   {p.max_listings == null ? tp("unlimitedListings") : tp("listings", { count: p.max_listings })}

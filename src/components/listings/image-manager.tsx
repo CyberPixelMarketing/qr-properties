@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowLeft, ArrowRight, ImagePlus, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ImagePlus, Trash2 } from "@/components/icons";
 import { createClient } from "@/lib/supabase/client";
 import { Button, cn } from "@/components/ui";
 
@@ -96,7 +96,7 @@ export function ImageManager({
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {images.map((img, i) => (
-          <div key={img.path} className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+          <div key={img.path} className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-line bg-divider">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={img.url} alt="" className="size-full object-cover" loading="lazy" />
             {i === 0 && (
@@ -158,7 +158,7 @@ export function ImageManager({
         onChange={(e) => onFiles(e.target.files)}
       />
       {error && <p className="text-sm text-red-600">{t("errors.generic")}</p>}
-      <p className="text-xs text-slate-500">{t("imagesHint")}</p>
+      <p className="text-xs text-muted">{t("imagesHint")}</p>
       {/* Keep an explicit button reachable for keyboard users when the grid is long */}
       {images.length > 8 && (
         <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()}>

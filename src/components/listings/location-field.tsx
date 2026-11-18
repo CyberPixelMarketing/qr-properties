@@ -3,13 +3,13 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { CheckCircle2, MapPin, Search } from "lucide-react";
+import { CheckCircle2, MapPin, Search } from "@/components/icons";
 import { Button, Field, Input } from "@/components/ui";
 import { extractLatLng, isGoogleMapsUrl, mapsUrlFor, type LatLng } from "@/lib/maps";
 
 const PinMap = dynamic(() => import("./pin-map"), {
   ssr: false,
-  loading: () => <div className="h-80 animate-pulse rounded-xl bg-slate-100" />,
+  loading: () => <div className="h-80 animate-pulse rounded-xl bg-divider" />,
 });
 
 export function LocationField({
@@ -107,7 +107,7 @@ export function LocationField({
           <p className="flex items-center gap-1.5 text-sm text-green-700">
             <CheckCircle2 className="size-4" aria-hidden />
             {t("locationFound")}
-            <span className="text-slate-500" dir="ltr">
+            <span className="text-muted" dir="ltr">
               ({point.lat.toFixed(5)}, {point.lng.toFixed(5)})
             </span>
           </p>

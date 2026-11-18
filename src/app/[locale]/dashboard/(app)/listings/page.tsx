@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { Building, Home, Plus } from "lucide-react";
+import { Building, Home, Plus } from "@/components/icons";
 import { requireUser } from "@/lib/auth";
 import { SITE_URL } from "@/lib/env";
 import { imagesFor, LISTING_COLUMNS, thumbUrl, type ListingRow as Row } from "@/lib/listings";
@@ -70,7 +70,7 @@ export default async function ListingsPage({
             aria-current={filter === f ? "page" : undefined}
             className={cn(
               "shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium",
-              filter === f ? "bg-navy text-white" : "bg-white text-navy ring-1 ring-slate-200 hover:bg-sky-soft",
+              filter === f ? "bg-navy text-white" : "bg-white text-navy ring-1 ring-line hover:bg-sky-soft",
             )}
           >
             {f === "all" ? t("all") : t(`status.${f}`)}
@@ -80,7 +80,7 @@ export default async function ListingsPage({
 
       {list.length === 0 ? (
         <Card className="py-12 text-center">
-          <p className="text-slate-600">{t("empty")}</p>
+          <p className="text-muted">{t("empty")}</p>
           <Link href="/dashboard/listings/new?kind=apartment" className={buttonClass("primary", "mt-4")}>
             <Plus className="size-4" aria-hidden />
             {t("newApartment")}

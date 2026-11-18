@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { Bath, BarChart3, BedDouble, Building2, Eye, EyeOff, Maximize2, Pencil } from "lucide-react";
+import { Bath, BarChart3, BedDouble, Building2, Eye, EyeOff, Maximize2, Pencil } from "@/components/icons";
 import { setListingStatusAction } from "@/app/[locale]/dashboard/(app)/listings/actions";
 import { buttonClass, cn } from "@/components/ui";
 import { formatAed, type ListingRow as Row } from "@/lib/listings";
@@ -9,7 +9,7 @@ import { CopyLinkButton, DeleteListingButton } from "./row-actions";
 const statusTone = {
   published: "bg-green-50 text-green-700 ring-green-200",
   draft: "bg-amber-50 text-amber-700 ring-amber-200",
-  hidden: "bg-slate-100 text-slate-600 ring-slate-200",
+  hidden: "bg-divider text-muted ring-line",
 } as const;
 
 export async function ListingRow({
@@ -31,7 +31,7 @@ export async function ListingRow({
   const nextStatus = row.status === "published" ? "hidden" : "published";
 
   return (
-    <article className="flex gap-3 rounded-card border border-slate-200 bg-white p-3 shadow-sm sm:gap-4">
+    <article className="flex gap-3 rounded-card bg-white p-3 shadow-card sm:gap-4">
       <Link href={`/dashboard/listings/${row.id}/edit`} className="relative block aspect-[4/3] w-28 shrink-0 overflow-hidden rounded-xl bg-sky-soft sm:w-40">
         {cover ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -45,10 +45,10 @@ export async function ListingRow({
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           <span className="rounded-full bg-sky-soft px-2 py-0.5 font-medium text-brand">{t(`kind.${row.kind}`)}</span>
-          {row.purpose && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-slate-700">{t(`purpose.${row.purpose}`)}</span>}
+          {row.purpose && <span className="rounded-full bg-divider px-2 py-0.5 text-text">{t(`purpose.${row.purpose}`)}</span>}
           <span className={cn("rounded-full px-2 py-0.5 ring-1", statusTone[row.status])}>{t(`status.${row.status}`)}</span>
           {views != null && views > 0 && (
-            <span className="inline-flex items-center gap-1 text-slate-500" title={ts("views", { n: views })}>
+            <span className="inline-flex items-center gap-1 text-muted" title={ts("views", { n: views })}>
               <BarChart3 className="size-3.5" aria-hidden />
               {views}
             </span>
@@ -58,11 +58,11 @@ export async function ListingRow({
           {row.title}
         </Link>
         {row.kind === "building" ? (
-          <p className="text-sm text-slate-600">{t("unitsCount", { count: unitsCount ?? 0 })}</p>
+          <p className="text-sm text-muted">{t("unitsCount", { count: unitsCount ?? 0 })}</p>
         ) : (
           <>
             {row.price_aed != null && <p className="text-lg font-bold text-brand">{formatAed(row.price_aed, locale)}</p>}
-            <p className="flex flex-wrap gap-3 text-xs text-slate-600">
+            <p className="flex flex-wrap gap-3 text-xs text-muted">
               {row.bedrooms != null && (
                 <span className="inline-flex items-center gap-1">
                   <BedDouble className="size-3.5" aria-hidden /> {row.bedrooms === 0 ? t("studio") : row.bedrooms}

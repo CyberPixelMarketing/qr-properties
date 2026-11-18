@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Bath, BedDouble, ChevronDown, MapPin, Maximize2, Navigation } from "lucide-react";
+import { Bath, BedDouble, ChevronDown, MapPin, Maximize2, Navigation } from "@/components/icons";
 import { Link } from "@/i18n/navigation";
 import { formatAed } from "@/lib/listing-urls";
 import { cn } from "@/components/ui";
@@ -20,52 +20,45 @@ export function useDistanceLabel() {
   };
 }
 
+/** Figma "specs" row: bed + bath (+ area) with Ionicons outline. */
 function Specs({ item, className }: { item: PublicItem; className?: string }) {
+  const t = useTranslations("public");
   const tl = useTranslations("listings");
   const locale = useLocale();
   if (item.bedrooms == null && item.bathrooms == null && item.area_sqft == null) return null;
+  const nf = (n: number) => n.toLocaleString(locale === "ar" ? "ar-AE" : "en-AE");
   return (
-    <ul className={cn("flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-700", className)}>
+    <ul className={cn("flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[13px] leading-[22px] text-text", className)}>
       {item.bedrooms != null && (
-        <li className="inline-flex items-center gap-1.5">
-          <BedDouble className="size-4 text-slate-500" aria-hidden />
-          <span>{item.bedrooms === 0 ? tl("studio") : item.bedrooms}</span>
-          <span className="sr-only">{tl("bedrooms")}</span>
+        <li className="inline-flex items-center gap-1">
+          <BedDouble className="size-[15px]" aria-hidden />
+          {item.bedrooms === 0 ? tl("studio") : t("bedsN", { n: item.bedrooms })}
         </li>
       )}
       {item.bathrooms != null && (
-        <li className="inline-flex items-center gap-1.5">
-          <Bath className="size-4 text-slate-500" aria-hidden />
-          <span>{item.bathrooms}</span>
-          <span className="sr-only">{tl("bathrooms")}</span>
+        <li className="inline-flex items-center gap-1">
+          <Bath className="size-[15px]" aria-hidden />
+          {t("bathsN", { n: item.bathrooms })}
         </li>
       )}
       {item.area_sqft != null && (
-        <li className="inline-flex items-center gap-1.5">
-          <Maximize2 className="size-4 text-slate-500" aria-hidden />
-          <span>
-            {Number(item.area_sqft).toLocaleString(locale === "ar" ? "ar-AE" : "en-AE")} {locale === "ar" ? "قدم²" : "sqft"}
-          </span>
+        <li className="inline-flex items-center gap-1">
+          <Maximize2 className="size-[15px]" aria-hidden />
+          {t("sqft", { n: nf(Number(item.area_sqft)) })}
         </li>
       )}
     </ul>
   );
 }
 
-function Price({ item, large = true }: { item: PublicItem; large?: boolean }) {
+function Price({ item, size = "lg" }: { item: PublicItem; size?: "lg" | "sm" }) {
   const t = useTranslations("public");
-  const tl = useTranslations("listings");
   const locale = useLocale();
   if (item.price_aed == null) return null;
   return (
-    <p className={cn("font-bold text-navy", large ? "text-2xl" : "text-lg")}>
+    <p className={cn("font-bold text-ink", size === "lg" ? "text-xl leading-8" : "text-[15px] leading-6")}>
       {formatAed(item.price_aed, locale)}
-      {item.purpose === "rent" && <span className="ms-1 text-sm font-normal text-slate-500">{t("perYear")}</span>}
-      {item.purpose && (
-        <span className="ms-2 rounded-full bg-sky-soft px-2 py-0.5 align-middle text-xs font-medium text-brand">
-          {tl(`purpose.${item.purpose}`)}
-        </span>
-      )}
+      {item.purpose === "rent" && <span> {t("perYear")}</span>}
     </p>
   );
 }
@@ -77,23 +70,26 @@ function DistanceBadge({ meters, nearest }: { meters: number | null; nearest?: b
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium",
-        nearest ? "bg-accent text-white" : "bg-sky-soft text-brand",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium leading-[18px]",
+        nearest ? "bg-success text-white" : "bg-white text-ink shadow-card",
       )}
     >
-      <Navigation className="size-3.5" aria-hidden />
+      <Navigation className="size-3" aria-hidden />
       {nearest && <span>{t("nearest")} ·</span>}
       {label(meters)}
     </span>
   );
 }
 
-/** Horizontal on desktop, vertical on mobile. */
+function PurposePill({ label }: { label: string }) {
+  return <span className="rounded-full bg-brand px-2.5 py-0.5 text-[11px] font-medium leading-[18px] text-white">{label}</span>;
+}
+
+/** Figma "Property card": media with overlay pills, then price / title / location / specs. */
 export function ListingCard({
   item,
   advertiser,
   qrUrl,
-  siteUrl,
   distance,
   nearest,
   priority,
@@ -101,51 +97,41 @@ export function ListingCard({
   item: PublicItem;
   advertiser: Advertiser;
   qrUrl: string;
-  siteUrl: string;
+  siteUrl?: string;
   distance: number | null;
   nearest?: boolean;
   priority?: boolean;
 }) {
-  const t = useTranslations("public");
+  const tl = useTranslations("listings");
   const href = `/a/${advertiser.slug}/p/${item.id}`;
-  const url = `${siteUrl}${href}`;
   return (
-    <article
-      className={cn(
-        "overflow-hidden rounded-card border bg-white shadow-sm transition hover:shadow-md md:flex",
-        nearest ? "border-accent ring-2 ring-accent/30" : "border-slate-200",
-      )}
-    >
-      <ImageSlider
-        paths={item.image_paths}
-        qrUrl={qrUrl}
-        advertiserName={advertiser.name}
-        alt={item.title}
-        className="aspect-[4/3] md:aspect-auto md:h-auto md:w-[42%] md:min-h-64 md:shrink-0"
-        priority={priority}
-      />
-      <div className="flex min-w-0 flex-1 flex-col gap-2 p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <Price item={item} />
+    <article className={cn("flex flex-col overflow-hidden rounded-card bg-white shadow-card", nearest && "ring-2 ring-success")}>
+      <div className="relative">
+        <ImageSlider
+          paths={item.image_paths}
+          qrUrl={qrUrl}
+          advertiserName={advertiser.name}
+          alt={item.title}
+          className="h-[170px] sm:h-[190px]"
+          priority={priority}
+        />
+        <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-2.5">
+          {item.purpose ? <PurposePill label={tl(`purpose.${item.purpose}`)} /> : <span />}
           <DistanceBadge meters={distance} nearest={nearest} />
         </div>
-        <Specs item={item} />
-        <Link href={href} className="line-clamp-2 text-base font-bold text-brand hover:underline">
+      </div>
+      <div className="flex flex-1 flex-col gap-1.5 p-3.5">
+        <Price item={item} />
+        <Link href={href} className="line-clamp-2 text-[15px] font-medium leading-[26px] text-text hover:text-brand">
           {item.title}
         </Link>
         {item.address_text && (
-          <p className="flex items-center gap-1.5 text-sm text-slate-600">
-            <MapPin className="size-4 shrink-0 text-slate-400" aria-hidden />
+          <p className="flex items-center gap-1 text-[13px] leading-[22px] text-muted">
+            <MapPin className="size-3.5 shrink-0" aria-hidden />
             <span className="truncate">{item.address_text}</span>
           </p>
         )}
-        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
-          <ContactButtons advertiser={advertiser} compact waText={t("waMessage", { title: item.title, url })} />
-          {advertiser.logoUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={advertiser.logoUrl} alt={advertiser.name} className="hidden h-9 w-auto max-w-20 rounded object-contain sm:block" loading="lazy" />
-          )}
-        </div>
+        <Specs item={item} />
       </div>
     </article>
   );
@@ -155,17 +141,21 @@ function UnitRow({ unit, advertiser, siteUrl }: { unit: PublicItem; advertiser: 
   const t = useTranslations("public");
   const href = `/a/${advertiser.slug}/p/${unit.id}`;
   return (
-    <li className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3">
-      <div className="min-w-0 space-y-1">
-        <Link href={href} className="line-clamp-1 font-bold text-brand hover:underline">
-          {unit.title}
-        </Link>
-        <Price item={unit} large={false} />
-        <Specs item={unit} className="text-xs" />
+    <li className="space-y-2 rounded-xl bg-white p-3">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <Link href={href} className="line-clamp-1 text-[15px] font-medium text-text hover:text-brand">
+            {unit.title}
+          </Link>
+          <Specs item={unit} />
+        </div>
+        <Price item={unit} size="sm" />
       </div>
       <ContactButtons
-        advertiser={{ ...advertiser, email: null }}
-        compact
+        advertiser={advertiser}
+        showEmail={false}
+        variant="bar"
+        className="[&>a]:min-h-9 [&>a]:py-1.5"
         waText={t("waMessage", { title: unit.title, url: `${siteUrl}${href}` })}
       />
     </li>
@@ -206,41 +196,44 @@ export function BuildingCard({
   return (
     <article
       className={cn(
-        "overflow-hidden rounded-card border bg-white shadow-sm",
-        nearest ? "border-accent ring-2 ring-accent/30" : "border-slate-200",
+        "flex flex-col overflow-hidden rounded-card bg-white shadow-card",
+        open && "sm:col-span-2 lg:col-span-3",
+        nearest && "ring-2 ring-success",
       )}
     >
-      <div className="md:flex">
-        <ImageSlider
-          paths={building.image_paths}
-          qrUrl={qrUrl}
-          advertiserName={advertiser.name}
-          alt={building.title}
-          className="aspect-[4/3] md:aspect-auto md:min-h-56 md:w-[42%] md:shrink-0"
-          priority={priority}
-        />
-        <div className="flex flex-1 flex-col gap-2 p-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="rounded-full bg-navy px-2.5 py-1 text-xs font-medium text-white">{tl("kind.building")}</span>
+      <div className={cn(open && "md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)]")}>
+        <div className="relative">
+          <ImageSlider
+            paths={building.image_paths}
+            qrUrl={qrUrl}
+            advertiserName={advertiser.name}
+            alt={building.title}
+            className={cn("h-[170px] sm:h-[190px]", open && "md:h-full md:min-h-64")}
+            priority={priority}
+          />
+          <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-2.5">
+            <span className="rounded-full bg-ink px-2.5 py-0.5 text-[11px] font-medium leading-[18px] text-white">{tl("kind.building")}</span>
             <DistanceBadge meters={distance} nearest={nearest} />
           </div>
-          <Link href={href} className="text-lg font-bold text-brand hover:underline">
+        </div>
+        <div className="flex flex-col gap-1.5 p-3.5">
+          <Link href={href} className="text-xl font-bold leading-8 text-ink hover:text-brand">
             {building.title}
           </Link>
           {building.address_text && (
-            <p className="flex items-center gap-1.5 text-sm text-slate-600">
-              <MapPin className="size-4 shrink-0 text-slate-400" aria-hidden />
+            <p className="flex items-center gap-1 text-[13px] leading-[22px] text-muted">
+              <MapPin className="size-3.5 shrink-0" aria-hidden />
               {building.address_text}
             </p>
           )}
-          <p className="text-sm font-medium text-navy">{t("units", { count: units.length })}</p>
+          <p className="text-[13px] font-semibold text-brand">{t("units", { count: units.length })}</p>
           {units.length > 0 && (
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
               aria-expanded={open}
               aria-controls={panelId}
-              className="mt-auto inline-flex w-fit items-center gap-1.5 rounded-xl bg-sky-soft px-4 py-2.5 text-sm font-medium text-brand hover:bg-blue-100"
+              className="mt-auto inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-[14px] bg-sky-soft px-4 text-[13px] font-semibold text-brand hover:bg-[#dcebf8]"
             >
               {open ? t("hideUnits") : t("showUnits")}
               <ChevronDown className={cn("size-4 transition", open && "rotate-180")} aria-hidden />
@@ -249,7 +242,7 @@ export function BuildingCard({
         </div>
       </div>
       {open && units.length > 0 && (
-        <ul id={panelId} className="space-y-2 border-t border-slate-100 bg-slate-50 p-3">
+        <ul id={panelId} className="grid gap-2 bg-page p-3 sm:grid-cols-2">
           {units.map((u) => (
             <UnitRow key={u.id} unit={u} advertiser={advertiser} siteUrl={siteUrl} />
           ))}

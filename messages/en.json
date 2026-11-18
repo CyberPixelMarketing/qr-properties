@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "QR Properties",
+    "appName": "Alfareej",
     "save": "Save",
     "saving": "Saving…",
     "saved": "Saved",
@@ -105,7 +105,9 @@
     "publicPage": "Your public page",
     "copy": "Copy",
     "copied": "Copied",
-    "comingNext": "Listings and QR management arrive in the next phases."
+    "comingNext": "Listings and QR management arrive in the next phases.",
+    "myQrTitle": "My QR code",
+    "myQrBody": "Print it on boards and flyers. Customers scan it to see all your listings."
   },
   "pricing": {
     "title": "Plans & pricing",
@@ -260,7 +262,32 @@
     "waMessage": "Hello, I'm interested in this property: {title}\n{url}",
     "allProperties": "All properties from {name}",
     "inBuilding": "In {name}",
-    "poweredBy": "Property page by {app}"
+    "poweredBy": "Property page by {app}",
+    "memberSince": "Member since {date}",
+    "officeType": "Brokerage",
+    "individualType": "Agent / owner",
+    "statRent": "For rent",
+    "statSale": "For sale",
+    "statActive": "Active listings",
+    "qrCardTitle": "Advertiser QR code",
+    "qrCardBody": "Scan to see all of this advertiser's listings.",
+    "qrShow": "Show QR code",
+    "qrSheetTitle": "QR code",
+    "qrDownload": "Download code",
+    "segAll": "All",
+    "segSale": "For sale",
+    "segRent": "Rent",
+    "advertiser": "Advertiser",
+    "propertySpecs": "Property details",
+    "purposeLabel": "Purpose",
+    "typeLabel": "Type",
+    "bathsLabel": "Bathrooms",
+    "bedsLabel": "Bedrooms",
+    "areaLabel": "Built-up area",
+    "bedsN": "{n, plural, one {# bed} other {# beds}}",
+    "bathsN": "{n, plural, one {# bath} other {# baths}}",
+    "sqft": "{n} sqft",
+    "back": "Back"
   },
   "qr": {
     "title": "Your QR code",

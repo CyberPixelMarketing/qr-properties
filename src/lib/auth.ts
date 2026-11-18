@@ -16,6 +16,7 @@ export type Profile = {
   role: "advertiser" | "admin";
   is_suspended: boolean;
   onboarded_at: string | null;
+  created_at: string;
 };
 
 export type CredentialLink = { id: string; label: string; url: string; sort_order: number };
@@ -30,7 +31,7 @@ export const requireUser = cache(async (locale: string) => {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id,account_type,display_name,slug,logo_path,bio,phone,whatsapp,contact_email,role,is_suspended,onboarded_at")
+    .select("id,account_type,display_name,slug,logo_path,bio,phone,whatsapp,contact_email,role,is_suspended,onboarded_at,created_at")
     .eq("id", user.id)
     .single<Profile>();
   if (!profile) redirect(`/${locale}/login`);

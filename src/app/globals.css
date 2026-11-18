@@ -1,18 +1,32 @@
 @import "tailwindcss";
-@import "@fontsource/ibm-plex-sans-arabic/arabic-400.css";
-@import "@fontsource/ibm-plex-sans-arabic/arabic-700.css";
-@import "@fontsource/ibm-plex-sans-arabic/latin-400.css";
-@import "@fontsource/ibm-plex-sans-arabic/latin-700.css";
+@import "@fontsource/noto-sans-arabic/arabic-400.css";
+@import "@fontsource/noto-sans-arabic/arabic-500.css";
+@import "@fontsource/noto-sans-arabic/arabic-600.css";
+@import "@fontsource/noto-sans-arabic/arabic-700.css";
+@import "@fontsource/noto-sans-arabic/latin-400.css";
+@import "@fontsource/noto-sans-arabic/latin-600.css";
+@import "@fontsource/noto-sans-arabic/latin-700.css";
 
+/* Alfareej design tokens (Figma: Alfareej — App Design v1 / Design System) */
 @theme {
-  --color-brand: #1d4ed8;
-  --color-brand-dark: #1e40af;
-  --color-navy: #0b2a5b;
-  --color-sky-soft: #eaf2ff;
-  --color-accent: #0ea5e9;
-  --color-whatsapp: #25d366;
-  --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
-  --radius-card: 1rem;
+  --color-brand: #2a7cbf; /* color/primary */
+  --color-brand-dark: #22679f;
+  --color-navy: #0e1c2b; /* color/ink */
+  --color-ink: #0e1c2b;
+  --color-sky-soft: #eaf3fb; /* color/primarySoft */
+  --color-page: #f5f7fa; /* color/bg */
+  --color-text: #26323f; /* color/text */
+  --color-muted: #6b7785; /* color/muted */
+  --color-subtle: #9aa5b1; /* color/subtle */
+  --color-line: #e3e8ee; /* color/border */
+  --color-divider: #eef1f5; /* color/divider */
+  --color-success: #1e9e6a;
+  --color-success-soft: #e5f6ee;
+  --color-accent: #2a7cbf;
+  --color-whatsapp: #1faf54;
+  --font-sans: "Noto Sans Arabic", system-ui, sans-serif;
+  --radius-card: 1rem; /* 16px */
+  --shadow-card: 0 4px 14px 0 rgb(14 28 43 / 0.08);
 }
 
 html {
@@ -20,7 +34,7 @@ html {
 }
 
 body {
-  @apply bg-white text-slate-800 antialiased;
+  @apply bg-page text-text antialiased;
   font-family: var(--font-sans);
 }
 

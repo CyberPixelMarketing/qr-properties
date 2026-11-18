@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Building2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Building2, ChevronLeft, ChevronRight } from "@/components/icons";
 import { listingImageUrl, thumbUrl } from "@/lib/listing-urls";
 import { cn } from "@/components/ui";
 
@@ -49,7 +49,7 @@ export function ImageSlider({
   };
 
   return (
-    <div className={cn("group relative overflow-hidden bg-slate-100", className)}>
+    <div className={cn("group relative overflow-hidden bg-divider", className)}>
       <div
         ref={ref}
         onScroll={onScroll}
@@ -84,8 +84,8 @@ export function ImageSlider({
         <div className="flex h-full w-full shrink-0 snap-center flex-col items-center justify-center gap-2 bg-white p-4 text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={qrUrl} alt={t("qrSlideTitle")} className="aspect-square h-3/5 max-h-72" loading="lazy" />
-          <p className="text-sm font-bold text-navy">{t("qrSlideTitle")}</p>
-          <p className="text-xs text-slate-600">{t("qrSlideBody", { name: advertiserName })}</p>
+          <p className="text-[15px] font-semibold text-ink">{t("qrSlideTitle")}</p>
+          <p className="text-[13px] text-muted">{t("qrSlideBody", { name: advertiserName })}</p>
         </div>
       </div>
 
@@ -95,7 +95,7 @@ export function ImageSlider({
             type="button"
             onClick={() => go(-1)}
             disabled={index === 0}
-            className="absolute start-2 top-1/2 hidden size-9 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-navy shadow transition disabled:opacity-0 group-hover:grid"
+            className="absolute start-2.5 top-1/2 hidden size-9 -translate-y-1/2 place-items-center rounded-full bg-white text-ink shadow-card transition disabled:opacity-0 group-hover:grid"
             aria-label={t("prev")}
           >
             {rtl ? <ChevronRight className="size-5" aria-hidden /> : <ChevronLeft className="size-5" aria-hidden />}
@@ -104,18 +104,18 @@ export function ImageSlider({
             type="button"
             onClick={() => go(1)}
             disabled={index === total - 1}
-            className="absolute end-2 top-1/2 hidden size-9 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-navy shadow transition disabled:opacity-0 group-hover:grid"
+            className="absolute end-2.5 top-1/2 hidden size-9 -translate-y-1/2 place-items-center rounded-full bg-white text-ink shadow-card transition disabled:opacity-0 group-hover:grid"
             aria-label={t("next")}
           >
             {rtl ? <ChevronLeft className="size-5" aria-hidden /> : <ChevronRight className="size-5" aria-hidden />}
           </button>
-          <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center gap-1" aria-hidden>
+          <div className="pointer-events-none absolute inset-x-0 bottom-3 flex justify-center gap-[5px]" aria-hidden>
             {Array.from({ length: Math.min(total, 8) }).map((_, i) => (
-              <span key={i} className={cn("h-1.5 rounded-full bg-white shadow transition-all", i === index ? "w-4" : "w-1.5 opacity-70")} />
+              <span key={i} className={cn("h-1.5 rounded-full bg-white transition-all", i === index ? "w-4" : "w-1.5 opacity-60")} />
             ))}
           </div>
-          <span className="absolute end-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-xs text-white" aria-live="polite">
-            {index + 1}/{total}
+          <span className="absolute bottom-2.5 end-2.5 rounded-full bg-ink px-2.5 py-0.5 text-[11px] font-medium leading-[18px] text-white" aria-live="polite" dir="ltr">
+            {index + 1} / {total}
           </span>
         </>
       )}

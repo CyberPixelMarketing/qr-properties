@@ -13,6 +13,7 @@ export type PublicProfile = {
   phone: string | null;
   whatsapp: string | null;
   contact_email: string | null;
+  created_at: string;
 };
 
 export const getPublicProfile = cache(async (slug: string) => {
@@ -20,7 +21,7 @@ export const getPublicProfile = cache(async (slug: string) => {
   const supabase = createPublicClient();
   const { data } = await supabase
     .from("profiles")
-    .select("id,slug,display_name,account_type,logo_path,bio,phone,whatsapp,contact_email")
+    .select("id,slug,display_name,account_type,logo_path,bio,phone,whatsapp,contact_email,created_at")
     .eq("slug", slug)
     .maybeSingle<PublicProfile>();
   if (!data) return null;

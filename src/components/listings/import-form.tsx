@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Download, Loader2 } from "lucide-react";
+import { Download, Loader2 } from "@/components/icons";
 import { Link } from "@/i18n/navigation";
 import { useFormSubmit } from "@/lib/use-form-submit";
 import { Alert, Button, Field, Input, buttonClass } from "@/components/ui";
@@ -34,7 +34,7 @@ export function ImportForm({ disabled }: { disabled?: boolean }) {
         {t("submit")}
       </Button>
       {pending && (
-        <p className="text-sm text-slate-600" role="status">
+        <p className="text-sm text-muted" role="status">
           {t("working")}
         </p>
       )}

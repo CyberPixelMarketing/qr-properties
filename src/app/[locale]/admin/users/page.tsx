@@ -51,7 +51,7 @@ export default async function AdminUsers({
       </form>
       <Card className="overflow-x-auto p-0">
         <table className="w-full min-w-[760px] text-sm">
-          <thead className="bg-slate-50 text-start text-xs text-slate-500">
+          <thead className="bg-page text-start text-xs text-muted">
             <tr>
               <th className="p-3 text-start">{t("name")}</th>
               <th className="p-3 text-start">{t("email")}</th>
@@ -61,10 +61,10 @@ export default async function AdminUsers({
               <th className="p-3 text-start">{t("status")}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100">
+          <tbody className="divide-y divide-divider">
             {(users ?? []).length === 0 && (
               <tr>
-                <td colSpan={6} className="p-6 text-center text-slate-500">
+                <td colSpan={6} className="p-6 text-center text-muted">
                   {t("noResults")}
                 </td>
               </tr>
@@ -83,7 +83,7 @@ export default async function AdminUsers({
                       </a>
                     )}
                   </td>
-                  <td className="p-3 text-slate-600" dir="ltr">
+                  <td className="p-3 text-muted" dir="ltr">
                     {u.contact_email}
                   </td>
                   <td className="p-3">{countBy.get(u.id) ?? 0}</td>
@@ -91,7 +91,7 @@ export default async function AdminUsers({
                     <form action={setPlanAction} className="flex gap-1">
                       <input type="hidden" name="id" value={u.id} />
                       <input type="hidden" name="locale" value={locale} />
-                      <select name="plan_id" defaultValue={live?.plan_id} className="rounded-lg border border-slate-300 px-2 py-1.5 text-sm" aria-label={t("changePlan")}>
+                      <select name="plan_id" defaultValue={live?.plan_id} className="rounded-lg border border-line px-2 py-1.5 text-sm" aria-label={t("changePlan")}>
                         {(plans ?? []).map((p) => (
                           <option key={p.id} value={p.id}>
                             {locale === "ar" ? p.name_ar : p.name_en}
@@ -101,7 +101,7 @@ export default async function AdminUsers({
                       <button className={buttonClass("secondary", "px-2.5 py-1.5 text-xs")}>{t("save")}</button>
                     </form>
                   </td>
-                  <td className="p-3 text-slate-500">{format.dateTime(new Date(u.created_at), { dateStyle: "medium" })}</td>
+                  <td className="p-3 text-muted">{format.dateTime(new Date(u.created_at), { dateStyle: "medium" })}</td>
                   <td className="p-3">
                     <form action={setSuspendedAction} className="flex items-center gap-2">
                       <input type="hidden" name="id" value={u.id} />

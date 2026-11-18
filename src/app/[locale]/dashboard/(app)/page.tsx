@@ -1,7 +1,10 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Building2, Eye, Home, Link2, QrCode, ScanLine } from "lucide-react";
+import { Building2, Eye, Home, Link2, QrCode, ScanLine } from "@/components/icons";
 import { Link } from "@/i18n/navigation";
-import { requireUser } from "@/lib/auth";
+import { requireUser, publicStorageUrl } from "@/lib/auth";
+import { ProfileCard } from "@/components/public/profile-card";
+import { QrCard } from "@/components/public/qr-card";
+import type { PublicProfile } from "@/lib/public-data";
 import { SITE_URL } from "@/lib/env";
 import { buttonClass, Card } from "@/components/ui";
 import { CopyButton } from "@/components/copy-button";
@@ -31,6 +34,19 @@ export default async function DashboardHome({ params }: { params: Promise<{ loca
     : { data: [] as { id: string; title: string; kind: string }[] };
   const titleOf = new Map((topRows ?? []).map((r) => [r.id, r.title]));
 
+  const { data: mine } = await supabase
+    .from("listings")
+    .select("purpose")
+    .eq("owner_id", profile.id)
+    .eq("status", "published")
+    .neq("kind", "building");
+  const myStats = {
+    rent: (mine ?? []).filter((m) => m.purpose === "rent").length,
+    sale: (mine ?? []).filter((m) => m.purpose === "sale").length,
+    active: (mine ?? []).length,
+  };
+  const { data: links } = await supabase.from("credential_links").select("id,label,url").eq("profile_id", profile.id).order("sort_order");
+
   const publicUrl = `${SITE_URL}/a/${profile.slug}`;
   const cards = [
     { label: ts("pageViews"), value: stats?.page_views ?? 0, icon: Eye },
@@ -41,10 +57,26 @@ export default async function DashboardHome({ params }: { params: Promise<{ loca
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-navy">{t("welcome", { name: profile.display_name ?? "" })}</h1>
+      {/* Figma S80b "My public page & QR" */}
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <ProfileCard
+          profile={profile as PublicProfile}
+          links={links ?? []}
+          advertiser={{
+            slug: profile.slug!,
+            name: profile.display_name ?? "",
+            logoUrl: publicStorageUrl("avatars", profile.logo_path),
+            phone: null,
+            whatsapp: null,
+            email: null,
+          }}
+          stats={myStats}
+        />
+        <QrCard slug={profile.slug!} title={t("myQrTitle")} body={t("myQrBody")} advertiserName={profile.display_name ?? ""} />
+      </div>
 
       <section aria-labelledby="stats-h">
-        <h2 id="stats-h" className="mb-3 text-sm font-medium text-slate-500">
+        <h2 id="stats-h" className="mb-3 text-sm font-medium text-muted">
           {ts("title")}
         </h2>
         <div className="grid grid-cols-3 gap-3">
@@ -52,7 +84,7 @@ export default async function DashboardHome({ params }: { params: Promise<{ loca
             <Card key={label} className="p-4">
               <Icon className="mb-2 size-5 text-brand" aria-hidden />
               <p className="text-2xl font-bold text-navy">{nf.format(Number(value))}</p>
-              <p className="text-xs text-slate-500">{label}</p>
+              <p className="text-xs text-muted">{label}</p>
             </Card>
           ))}
         </div>
@@ -60,7 +92,7 @@ export default async function DashboardHome({ params }: { params: Promise<{ loca
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
-          <h2 className="text-sm font-medium text-slate-500">{t("publicPage")}</h2>
+          <h2 className="text-sm font-medium text-muted">{t("publicPage")}</h2>
           <a href={`/${locale}/a/${profile.slug}`} target="_blank" rel="noopener" className="mt-2 block break-all font-medium text-brand hover:underline" dir="ltr">
             {publicUrl}
           </a>
@@ -74,9 +106,9 @@ export default async function DashboardHome({ params }: { params: Promise<{ loca
         </Card>
         {usage && (
           <Card>
-            <h2 className="text-sm font-medium text-slate-500">{t("planCard")}</h2>
+            <h2 className="text-sm font-medium text-muted">{t("planCard")}</h2>
             <p className="mt-2 text-xl font-bold text-navy">{locale === "ar" ? usage.plan_name_ar : usage.plan_name_en}</p>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="mt-1 text-sm text-muted">
               {usage.max_listings == null
                 ? t("listingsUsedUnlimited", { used: usage.listings_used })
                 : t("listingsUsed", { used: usage.listings_used, max: usage.max_listings })}
@@ -97,7 +129,7 @@ export default async function DashboardHome({ params }: { params: Promise<{ loca
         <Card>
           <h2 className="mb-3 font-bold text-navy">{ts("topListings")}</h2>
           {top.length === 0 ? (
-            <p className="text-sm text-slate-500">{ts("noData")}</p>
+            <p className="text-sm text-muted">{ts("noData")}</p>
           ) : (
             <ol className="space-y-2">
               {top.map((x) => (
@@ -105,7 +137,7 @@ export default async function DashboardHome({ params }: { params: Promise<{ loca
                   <Link href={`/dashboard/listings/${x.listing_id}/edit`} className="truncate text-navy hover:underline">
                     {titleOf.get(x.listing_id) ?? "—"}
                   </Link>
-                  <span className="shrink-0 text-slate-500">{ts("views", { n: nf.format(Number(x.views)) })}</span>
+                  <span className="shrink-0 text-muted">{ts("views", { n: nf.format(Number(x.views)) })}</span>
                 </li>
               ))}
             </ol>

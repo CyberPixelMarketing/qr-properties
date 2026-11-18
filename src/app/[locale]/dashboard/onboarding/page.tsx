@@ -33,7 +33,7 @@ export default async function OnboardingPage({
           <h1 className="text-2xl font-bold text-navy">
             {t("onboardingTitle")}
           </h1>
-          <p className="mb-6 mt-2 text-slate-600">{t("onboardingSubtitle")}</p>
+          <p className="mb-6 mt-2 text-muted">{t("onboardingSubtitle")}</p>
           <NextIntlClientProvider messages={messages}>
             <ProfileForm
               profile={profile}
