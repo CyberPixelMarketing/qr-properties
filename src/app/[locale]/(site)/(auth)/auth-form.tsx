@@ -80,7 +80,7 @@ export function AuthForm({ mode, next, initialError }: { mode: Mode; next?: stri
                 <GoogleIcon />
                 {t("google")}
               </Button>
-              <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
+              <div className="my-5 flex items-center gap-3 text-xs text-slate-500">
                 <span className="h-px flex-1 bg-slate-200" />
                 {t("or")}
                 <span className="h-px flex-1 bg-slate-200" />

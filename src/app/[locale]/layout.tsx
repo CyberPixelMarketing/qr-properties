@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { localeDir, routing } from "@/i18n/routing";
 import { SITE_URL } from "@/lib/env";
 import "../globals.css";
@@ -33,11 +33,16 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
+  // Public pages only need a few namespaces on the client; dashboard/admin layouts re-provide the rest.
+  const all = await getMessages();
+  const messages = Object.fromEntries(
+    ["common", "nav", "public", "listings", "auth", "landing"].map((k) => [k, all[k as keyof typeof all]]),
+  );
 
   return (
     <html lang={locale} dir={localeDir(locale)}>
       <body className="min-h-dvh">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

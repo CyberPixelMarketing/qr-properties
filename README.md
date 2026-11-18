@@ -49,6 +49,7 @@ npm run dev                  # http://localhost:3000
 | `SUPABASE_SERVICE_ROLE_KEY` | server only | Analytics inserts + admin operations. Never expose |
 | `ANTHROPIC_API_KEY` | server only | Import-from-link extraction |
 | `ANTHROPIC_MODEL` | server only | Defaults to `claude-haiku-5-5` |
+| `PAYMENT_PROVIDER` | server only | Empty = payments off. Future: `stripe` |
 
 ## Database
 
@@ -102,7 +103,7 @@ update public.profiles set role = 'admin' where contact_email = 'someone@example
 - [x] 3 — QR, public page, nearest-first, sharing
 - [x] 4 — Import from link
 - [x] 5 — Dashboard stats, A4 poster, plans, admin
-- [ ] 6 — Polish, seed data, deploy
+- [x] 6 — Polish, seed data, deploy
 
 ## Visitor location & privacy
 
@@ -130,3 +131,19 @@ Large portals (Bayut, Property Finder) run bot protection and usually refuse ser
 ## Admin
 
 `/admin` (role `admin` only): users (suspend / change plan), all listings (hide / delete), plans (prices, limits, visibility).
+
+## Seed data
+
+`supabase/seed.sql` creates 2 demo advertisers (`al-waha-properties`, `sara-almansoori`), a JLT building with 3 units, and 5 apartments across Dubai (Marina, Downtown, Business Bay, JVC, Palm). Use it on a local or staging project — not production — then sign in with the demo logins listed at the top of the file.
+
+## Deploy (Vercel)
+
+1. Import the GitHub repo in Vercel (framework: Next.js). Function region: `bom1` (closest to Supabase `ap-south-1`).
+2. Add the environment variables above (Production + Preview).
+3. In Supabase → Authentication → URL configuration: set **Site URL** to the production URL and add `https://<domain>/auth/callback` to **Redirect URLs**.
+4. Enable the Google provider in Supabase Auth (Google Cloud OAuth client; authorised redirect URI = `https://<project>.supabase.co/auth/v1/callback`).
+5. **Before printing any QR**: connect the final domain and set `NEXT_PUBLIC_SITE_URL` to it — QR codes encode that URL.
+
+## Performance
+
+Lighthouse (mobile, local production build): public advertiser page — Performance 87–90, Accessibility 100; landing and login — Performance 96–97, Accessibility 100. Public pages ship no Supabase client JS, use ISR (60 s), pre-connect to Storage, preload the first photo and serve 720 px thumbnails in cards.

@@ -47,7 +47,7 @@ export default async function ImportPage({ params }: { params: Promise<{ locale:
                   <p className="truncate text-slate-700" dir="ltr">
                     {j.url}
                   </p>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500">
                     {format.relativeTime(new Date(j.created_at))}
                     {j.error ? ` · ${t(`errors.${j.error}` as never)}` : ""}
                   </p>
