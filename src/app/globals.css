@@ -1,26 +1,36 @@
 @import "tailwindcss";
+@import "@fontsource/ibm-plex-sans-arabic/arabic-400.css";
+@import "@fontsource/ibm-plex-sans-arabic/arabic-500.css";
+@import "@fontsource/ibm-plex-sans-arabic/arabic-700.css";
+@import "@fontsource/ibm-plex-sans-arabic/latin-400.css";
+@import "@fontsource/ibm-plex-sans-arabic/latin-500.css";
+@import "@fontsource/ibm-plex-sans-arabic/latin-700.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-brand: #1d4ed8;
+  --color-brand-dark: #1e40af;
+  --color-navy: #0b2a5b;
+  --color-sky-soft: #eaf2ff;
+  --color-accent: #0ea5e9;
+  --color-whatsapp: #25d366;
+  --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --radius-card: 1rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-white text-slate-800 antialiased;
+  font-family: var(--font-sans);
+}
+
+/* Phone/URL fields stay LTR inside RTL layouts */
+.ltr-field {
+  direction: ltr;
+  text-align: start;
+}
+[dir="rtl"] .ltr-field {
+  text-align: right;
 }

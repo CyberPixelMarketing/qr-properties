@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# QR Properties
 
-## Getting Started
+A bilingual (Arabic / English) real-estate listing platform for the UAE market.
+Each advertiser gets **one QR code** that opens their public page, where listings are sorted **nearest-first** from the visitor's location.
 
-First, run the development server:
+Built by DUNE AI.
+
+## Stack
+
+| Layer | Choice |
+|---|---|
+| App | Next.js 15 (App Router), TypeScript (strict), Tailwind CSS v4 |
+| i18n | `next-intl` — locale in the URL (`/ar`, `/en`), full RTL/LTR |
+| Backend | Supabase — Auth, Postgres + PostGIS, Storage, Row Level Security |
+| Hosting | Vercel |
+
+### Extra libraries (and why)
+
+| Package | Why |
+|---|---|
+| `@supabase/ssr` | Cookie-based Supabase sessions for the App Router and middleware |
+| `next-intl` | Translations, locale routing, RTL/LTR |
+| `zod` | Server-side validation of every form/action |
+| `lucide-react` | Icon set (tree-shaken) |
+| `clsx` | Conditional class names |
+| `@fontsource/ibm-plex-sans-arabic` | Self-hosted Arabic font (no runtime call to Google Fonts) |
+| `server-only` | Build-time guard so server modules (service key) can't reach the browser |
+
+## Local development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local   # fill in the values
+npm install
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Name | Where | Notes |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | public | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | public | Publishable (anon) key |
+| `NEXT_PUBLIC_SITE_URL` | public | Final public URL. **QR codes encode this** — set the real domain before printing any QR |
+| `SUPABASE_SERVICE_ROLE_KEY` | server only | Analytics inserts + admin operations. Never expose |
+| `ANTHROPIC_API_KEY` | server only | Import-from-link extraction |
+| `ANTHROPIC_MODEL` | server only | Defaults to `claude-haiku-5-5` |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database
 
-## Learn More
+Migrations live in `supabase/migrations/` and are applied in filename order:
 
-To learn more about Next.js, take a look at the following resources:
+1. `…_schema.sql` — tables, enums, constraints, PostGIS, default plans
+2. `…_functions.sql` — triggers (plan limits, unit/building integrity, profile guard), RPCs (`get_advertiser_listings`, `my_plan_usage`, `my_stats`, …)
+3. `…_rls.sql` — Row Level Security on every table + storage buckets/policies
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Key rules enforced **in the database** (not just the UI):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- One table `listings` with `kind` = `apartment | building | unit`. Units must belong to a building of the same owner and never store their own location — they inherit the building's.
+- Apartments and buildings can't leave `draft` without a Google Maps link and coordinates.
+- Plan limits (`plans.max_listings`, `plans.max_imports_per_day`) are checked by triggers, so changing a row in `plans` takes effect immediately with no deploy.
+- Users can't change their own `role` or `is_suspended`.
+- The visitor's location is only a parameter to `get_advertiser_listings` — it is never stored.
 
-## Deploy on Vercel
+### Making someone an admin
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```sql
+update public.profiles set role = 'admin' where contact_email = 'someone@example.com';
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Supabase Auth settings
+
+- **Site URL**: your `NEXT_PUBLIC_SITE_URL`
+- **Redirect URLs**: `https://<your-domain>/auth/callback`, `http://localhost:3000/auth/callback`
+- **Google provider**: enable it and add the Google OAuth client ID/secret
+
+## Routes
+
+| Route | Purpose |
+|---|---|
+| `/{locale}` | Landing |
+| `/{locale}/pricing` | Plans (paid plans "coming soon") |
+| `/a/{slug}` | Advertiser public page — the QR target. No locale prefix; the middleware redirects by browser language and keeps `?src=qr` |
+| `/{locale}/login`, `/signup`, `/forgot-password`, `/reset-password` | Auth |
+| `/auth/callback` | OAuth / email-link handler |
+| `/{locale}/dashboard/onboarding` | Profile completion after sign-up |
+| `/{locale}/dashboard`, `/dashboard/profile` | Advertiser dashboard |
+
+## Build phases
+
+- [x] 1 — Foundation, auth, profile, AR/EN
+- [ ] 2 — Listings, buildings, units, images, location
+- [ ] 3 — QR, public page, nearest-first, sharing
+- [ ] 4 — Import from link
+- [ ] 5 — Dashboard stats, A4 poster, plans, admin
+- [ ] 6 — Polish, seed data, deploy
