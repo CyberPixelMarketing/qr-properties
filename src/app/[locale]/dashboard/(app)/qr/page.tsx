@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { AlertTriangle, Download, ExternalLink } from "lucide-react";
+import { AlertTriangle, Download, ExternalLink, FileImage } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
 import { SITE_URL } from "@/lib/env";
 import { qrTargetUrl } from "@/lib/qr";
@@ -10,6 +11,7 @@ export default async function QrPage({ params }: { params: Promise<{ locale: str
   setRequestLocale(locale);
   const { profile } = await requireUser(locale);
   const t = await getTranslations("qr");
+  const tp = await getTranslations("poster");
   const slug = profile.slug!;
   const temporaryDomain = /\.vercel\.app$|localhost/.test(new URL(SITE_URL).hostname);
 
@@ -42,6 +44,10 @@ export default async function QrPage({ params }: { params: Promise<{ locale: str
               <Download className="size-4" aria-hidden />
               {t("downloadSvg")}
             </a>
+            <Link href="/dashboard/poster" className={buttonClass("secondary")}>
+              <FileImage className="size-4" aria-hidden />
+              {tp("open")}
+            </Link>
             <a href={`/${locale}/a/${slug}`} target="_blank" rel="noopener" className={buttonClass("ghost")}>
               <ExternalLink className="size-4" aria-hidden />
               {t("openPage")}

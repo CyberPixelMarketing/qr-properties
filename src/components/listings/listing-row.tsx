@@ -1,6 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { Bath, BedDouble, Building2, Eye, EyeOff, Maximize2, Pencil } from "lucide-react";
+import { Bath, BarChart3, BedDouble, Building2, Eye, EyeOff, Maximize2, Pencil } from "lucide-react";
 import { setListingStatusAction } from "@/app/[locale]/dashboard/(app)/listings/actions";
 import { buttonClass, cn } from "@/components/ui";
 import { formatAed, type ListingRow as Row } from "@/lib/listings";
@@ -17,13 +17,16 @@ export async function ListingRow({
   cover,
   publicUrl,
   unitsCount,
+  views,
 }: {
   row: Row;
   cover?: string;
   publicUrl: string;
   unitsCount?: number;
+  views?: number;
 }) {
   const t = await getTranslations("listings");
+  const ts = await getTranslations("stats");
   const locale = await getLocale();
   const nextStatus = row.status === "published" ? "hidden" : "published";
 
@@ -44,6 +47,12 @@ export async function ListingRow({
           <span className="rounded-full bg-sky-soft px-2 py-0.5 font-medium text-brand">{t(`kind.${row.kind}`)}</span>
           {row.purpose && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-slate-700">{t(`purpose.${row.purpose}`)}</span>}
           <span className={cn("rounded-full px-2 py-0.5 ring-1", statusTone[row.status])}>{t(`status.${row.status}`)}</span>
+          {views != null && views > 0 && (
+            <span className="inline-flex items-center gap-1 text-slate-500" title={ts("views", { n: views })}>
+              <BarChart3 className="size-3.5" aria-hidden />
+              {views}
+            </span>
+          )}
         </div>
         <Link href={`/dashboard/listings/${row.id}/edit`} className="mt-1 line-clamp-1 font-bold text-navy hover:underline">
           {row.title}

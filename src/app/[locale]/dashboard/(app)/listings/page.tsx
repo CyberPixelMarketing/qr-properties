@@ -3,7 +3,9 @@ import { Link } from "@/i18n/navigation";
 import { Building, Home, Plus } from "lucide-react";
 import { requireUser } from "@/lib/auth";
 import { SITE_URL } from "@/lib/env";
-import { imagesFor, LISTING_COLUMNS, type ListingRow as Row } from "@/lib/listings";
+import { imagesFor, LISTING_COLUMNS, thumbUrl, type ListingRow as Row } from "@/lib/listings";
+
+const thumb = (p?: string) => (p ? thumbUrl(p) : undefined);
 import { ListingRow } from "@/components/listings/listing-row";
 import { buttonClass, Card, cn } from "@/components/ui";
 
@@ -41,6 +43,8 @@ export default async function ListingsPage({
   for (const u of units ?? []) unitCounts.set(u.building_id, (unitCounts.get(u.building_id) ?? 0) + 1);
 
   const images = await imagesFor(supabase, list.map((r) => r.id));
+  const { data: viewRows } = await supabase.rpc("my_listing_views", { p_days: 30 });
+  const views = new Map(((viewRows ?? []) as { listing_id: string; views: number }[]).map((v) => [v.listing_id, Number(v.views)]));
 
   return (
     <div className="space-y-5">
@@ -88,8 +92,9 @@ export default async function ListingsPage({
             <ListingRow
               key={r.id}
               row={r}
-              cover={images.get(r.id)?.[0]?.url}
+              cover={thumb(images.get(r.id)?.[0]?.path)}
               unitsCount={unitCounts.get(r.id)}
+              views={views.get(r.id)}
               publicUrl={`${SITE_URL}/a/${profile.slug}/p/${r.id}`}
             />
           ))}

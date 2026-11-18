@@ -1,7 +1,7 @@
 "use client";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import { Building2, Link2, LayoutDashboard, QrCode, UserRound } from "lucide-react";
+import { Building2, CreditCard, Link2, LayoutDashboard, QrCode, Shield, UserRound } from "lucide-react";
 import { cn } from "@/components/ui";
 
 // Items are added here as each phase ships (listings, QR, import, billing, admin).
@@ -11,9 +11,10 @@ const items = [
   { href: "/dashboard/import", key: "import", icon: Link2 },
   { href: "/dashboard/qr", key: "qr", icon: QrCode },
   { href: "/dashboard/profile", key: "profile", icon: UserRound },
+  { href: "/dashboard/billing", key: "billing", icon: CreditCard },
 ] as const;
 
-export function DashboardNav() {
+export function DashboardNav({ isAdmin = false }: { isAdmin?: boolean }) {
   const t = useTranslations("nav");
   const pathname = usePathname();
   return (
@@ -35,6 +36,12 @@ export function DashboardNav() {
           </Link>
         );
       })}
+      {isAdmin && (
+        <Link href="/admin" className="flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-navy hover:bg-sky-soft">
+          <Shield className="size-4" aria-hidden />
+          {t("admin")}
+        </Link>
+      )}
     </nav>
   );
 }

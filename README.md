@@ -101,7 +101,7 @@ update public.profiles set role = 'admin' where contact_email = 'someone@example
 - [x] 2 — Listings, buildings, units, images, location
 - [x] 3 — QR, public page, nearest-first, sharing
 - [x] 4 — Import from link
-- [ ] 5 — Dashboard stats, A4 poster, plans, admin
+- [x] 5 — Dashboard stats, A4 poster, plans, admin
 - [ ] 6 — Polish, seed data, deploy
 
 ## Visitor location & privacy
@@ -120,3 +120,13 @@ and are used to sort with the Haversine formula client-side — they are never s
 4. Copies up to 15 photos into Storage (WebP + thumbnail) and opens the result as a **draft** for review.
 
 Large portals (Bayut, Property Finder) run bot protection and usually refuse server-side reads; agency websites and pages with JSON-LD work best. Failures show a clear message and a link to the manual form.
+
+## Plans & payments
+
+- `plans` holds prices and limits (`max_listings`, `max_imports_per_day`; empty = unlimited). Admins edit them at `/admin/plans`; triggers read them live.
+- Every new user gets a `subscriptions` row on the default (free) plan.
+- `src/lib/payments/provider.ts` defines the `PaymentProvider` interface (checkout, portal, webhook). The default `NoopProvider` keeps payments off; `/api/billing/webhook` answers 501 until a provider is set via `PAYMENT_PROVIDER`.
+
+## Admin
+
+`/admin` (role `admin` only): users (suspend / change plan), all listings (hide / delete), plans (prices, limits, visibility).
