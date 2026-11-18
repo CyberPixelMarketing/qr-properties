@@ -23,6 +23,7 @@ Built by DUNE AI.
 | `zod` | Server-side validation of every form/action |
 | `lucide-react` | Icon set (tree-shaken) |
 | `clsx` | Conditional class names |
+| `qrcode` | Generates each advertiser's QR (PNG/SVG) on demand — nothing is stored |
 | `leaflet` + `react-leaflet` | Pin-picker map when a Google Maps link has no coordinates (OpenStreetMap tiles, no API key) |
 | `@fontsource/ibm-plex-sans-arabic` | Self-hosted Arabic font (no runtime call to Google Fonts) |
 | `server-only` | Build-time guard so server modules (service key) can't reach the browser |
@@ -53,6 +54,8 @@ Migrations live in `supabase/migrations/` and are applied in filename order:
 1. `…_schema.sql` — tables, enums, constraints, PostGIS, default plans
 2. `…_functions.sql` — triggers (plan limits, unit/building integrity, profile guard), RPCs (`get_advertiser_listings`, `my_plan_usage`, `my_stats`, …)
 3. `…_rls.sql` — Row Level Security on every table + storage buckets/policies
+4. `…_private_helpers.sql` — moves RLS helper functions out of the REST-exposed schema
+5. `…_track_event.sql` — anonymous, privacy-preserving view/scan counter (no service key needed)
 
 Key rules enforced **in the database** (not just the UI):
 
@@ -83,6 +86,9 @@ update public.profiles set role = 'admin' where contact_email = 'someone@example
 | `/a/{slug}` | Advertiser public page — the QR target. No locale prefix; the middleware redirects by browser language and keeps `?src=qr` |
 | `/{locale}/login`, `/signup`, `/forgot-password`, `/reset-password` | Auth |
 | `/auth/callback` | OAuth / email-link handler |
+| `/{locale}/a/{slug}/p/{id}` | Listing detail (gallery ends with the QR slide) |
+| `/api/qr/{slug}?format=png\|svg&size=…` | QR image for an advertiser |
+| `/api/maps/resolve` | Resolves a Google Maps link (incl. `maps.app.goo.gl`) to coordinates — signed-in users only |
 | `/{locale}/dashboard/onboarding` | Profile completion after sign-up |
 | `/{locale}/dashboard`, `/dashboard/profile` | Advertiser dashboard |
 
@@ -90,7 +96,13 @@ update public.profiles set role = 'admin' where contact_email = 'someone@example
 
 - [x] 1 — Foundation, auth, profile, AR/EN
 - [x] 2 — Listings, buildings, units, images, location
-- [ ] 3 — QR, public page, nearest-first, sharing
+- [x] 3 — QR, public page, nearest-first, sharing
 - [ ] 4 — Import from link
 - [ ] 5 — Dashboard stats, A4 poster, plans, admin
 - [ ] 6 — Polish, seed data, deploy
+
+## Visitor location & privacy
+
+The public page asks for location only after showing an explanation. Coordinates stay in the browser
+and are used to sort with the Haversine formula client-side — they are never sent to the server or stored.
+`get_advertiser_listings()` (PostGIS) is also available for server-side distance sorting if needed.

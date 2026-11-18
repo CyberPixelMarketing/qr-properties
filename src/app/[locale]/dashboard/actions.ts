@@ -107,6 +107,7 @@ export async function saveProfileAction(_: ProfileState, fd: FormData): Promise<
   }
 
   revalidatePath(`/${locale}/dashboard`, "layout");
+  revalidatePath("/[locale]/a/[slug]", "layout");
   if (onboarding) redirect(`/${locale}/dashboard`);
   return { ok: true };
 }

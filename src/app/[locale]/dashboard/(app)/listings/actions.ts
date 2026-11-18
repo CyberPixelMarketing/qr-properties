@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { withThumbs } from "@/lib/listings";
 
 export type ListingState =
   | { ok?: boolean; error?: string; errorParams?: Record<string, string | number>; fieldErrors?: Record<string, string> }
@@ -159,9 +160,10 @@ export async function saveListingAction(_: ListingState, fd: FormData): Promise<
     if (ins.error) return { error: "generic" };
   }
   const removed = (oldImgs ?? []).map((r) => r.storage_path).filter((p) => !imagePaths.includes(p));
-  if (removed.length) await supabase.storage.from("listing-images").remove(removed);
+  if (removed.length) await supabase.storage.from("listing-images").remove(withThumbs(removed));
 
   revalidatePath(`/${locale}/dashboard/listings`, "layout");
+  revalidatePath("/[locale]/a/[slug]", "layout");
   redirect(routeFor(locale, d.kind, d.building_id));
 }
 
@@ -173,6 +175,7 @@ export async function setListingStatusAction(fd: FormData) {
   const supabase = await createClient();
   await supabase.from("listings").update({ status: status.data }).eq("id", id.data);
   revalidatePath(`/${locale}/dashboard/listings`, "layout");
+  revalidatePath("/[locale]/a/[slug]", "layout");
 }
 
 export async function deleteListingAction(fd: FormData) {
@@ -189,9 +192,10 @@ export async function deleteListingAction(fd: FormData) {
   const { data: target } = await supabase.from("listings").select("kind,building_id").eq("id", id.data).single();
   const { error } = await supabase.from("listings").delete().eq("id", id.data);
   if (!error && imgs?.length) {
-    await supabase.storage.from("listing-images").remove(imgs.map((i) => i.storage_path));
+    await supabase.storage.from("listing-images").remove(withThumbs(imgs.map((i) => i.storage_path)));
   }
   revalidatePath(`/${locale}/dashboard/listings`, "layout");
+  revalidatePath("/[locale]/a/[slug]", "layout");
   if (target?.kind === "unit" && target.building_id) {
     redirect(`/${locale}/dashboard/listings/${target.building_id}/edit`);
   }

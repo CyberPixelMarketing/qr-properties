@@ -9,12 +9,13 @@ import { Button, cn } from "@/components/ui";
 export type ManagedImage = { path: string; url: string };
 
 const MAX_EDGE = 1920;
+const THUMB_EDGE = 720;
 
 /** Resize + re-encode to WebP in the browser so uploads stay small and pages stay fast. */
-async function compress(file: File): Promise<Blob> {
+async function compress(file: File, maxEdge = MAX_EDGE): Promise<Blob> {
   const bitmap = await createImageBitmap(file).catch(() => null);
   if (!bitmap) return file;
-  const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+  const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
   const w = Math.round(bitmap.width * scale);
   const h = Math.round(bitmap.height * scale);
   const canvas = document.createElement("canvas");
@@ -61,6 +62,15 @@ export function ImageManager({
           .from("listing-images")
           .upload(path, blob, { contentType: blob.type || file.type, cacheControl: "31536000" });
         if (upErr) throw upErr;
+        // Card-size thumbnail next to the original (same name + ".thumb.webp").
+        if (ext === "webp") {
+          const thumb = await compress(file, THUMB_EDGE);
+          if (thumb.type === "image/webp") {
+            await supabase.storage
+              .from("listing-images")
+              .upload(path.replace(/\.webp$/, ".thumb.webp"), thumb, { contentType: "image/webp", cacheControl: "31536000" });
+          }
+        }
         const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
         added.push({ path, url: data.publicUrl });
       } catch {
